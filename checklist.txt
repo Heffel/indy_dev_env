@@ -1,0 +1,18 @@
+apt search libindy
+apt search libnullpay
+apt search libvcx 
+apt search indy-cli
+
+python3 --version
+pip freeze
+REQS:
+indy-crypto==0.5.1
+aries-askar==0.3.2
+asyncpg~=0.29.0
+prompt_toolkit~=2.0.10
+web.py~=0.62
+pygments~=2.18
+qrcode~=7.4
+
+docker ps
+

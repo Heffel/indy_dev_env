@@ -1,0 +1,89 @@
+---
+- hosts: all
+  vars:
+    user: vagrant
+
+  become: true
+  remote_user: root
+  
+  roles:
+    - indy
+  
+  pre_tasks:
+    - name: update repositories
+      apt: update_cache=yes
+      become: true
+
+  tasks:
+    - name: install latest git.x86_64
+      apt: 
+        name: git 
+        state: latest
+        update_cache: yes
+      when: ansible_facts['os_family']  == 'Debian'
+
+    - name : Install gnupg
+      apt: 
+        name: gnupg
+        state: latest      
+      when: ansible_facts['os_family']  == 'Debian'
+
+    - name : Install software-properties-common
+      apt: 
+        name: software-properties-common 
+        state: latest      
+      when: ansible_facts['os_family']  == 'Debian'
+
+    - name : Install curl
+      apt: 
+        name: curl 
+        state: latest
+      when: ansible_facts['os_family']  == 'Debian'
+
+    - name: Install whois
+      apt: 
+        name: whois
+        state: present
+      when: ansible_facts['os_family']  == 'Debian'
+    
+    - name: set python3 as default
+      raw: sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+    
+    - name: Install python3-pip
+      apt: 
+        name: python3-pip
+        state: present
+      when: ansible_facts['os_family']  == 'Debian'
+
+    - name: pip3 upgrade
+      raw: python3 -m pip install --upgrade pip
+    
+    - name: pip3 install prompt-toolkit
+      raw: pip3 install "prompt-toolkit<3.0.0"
+
+    - name: pip3 install aries-askar
+      raw: pip3 install aries-askar==0.3.2
+
+    - name: pip3 install indy-crypto
+      raw: pip3 install indy-crypto
+    
+    - name: pip3 install qrcode
+      raw: pip3 install qrcode
+    
+    - name: pip3 install asyncpg
+      raw: pip3 install asyncpg
+
+    - name: pip3 install pygments
+      raw: pip3 install pygments
+
+    - name: pip3 install web.py
+      raw: pip3 install web.py
+
+    - name: pip3 install base58
+      raw: pip3 install base58==1.0.0
+
+    - name: install postgress docker for wallet
+      raw: docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
+
+    - name: downloading von network
+      raw: git clone https://github.com/bcgov/von-network.git /home/vagrant/von-network

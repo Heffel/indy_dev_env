@@ -1,0 +1,49 @@
+---
+- name: Install ca certificates
+  apt:
+    name: ca-certificates
+    state: present
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: CE7709D068DB5E88
+
+- name: Add sdk repo
+  apt_repository:
+    repo: deb https://repo.sovrin.org/sdk/deb bionic stable
+    state: present
+    validate_certs: false
+  become: true
+  update_cache: true
+  when: ansible_facts['os_family']  == 'Debian'
+
+- name: Add Docker key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add docker-compose repo
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+    validate_certs: false
+  become: true
+  update_cache: true
+  when: ansible_facts['os_family']  == 'Debian'
+
+- name: Install sdk
+  apt:
+    pkg: 
+      - libindy
+      - libnullpay
+      - libvcx
+      - indy-cli
+      - python3.6-dev
+      - python3.8
+      - docker.io
+      - docker-compose-plugin
+      - cargo
+    state: present
+  become: true
+  update_cache: true
