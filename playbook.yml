@@ -82,6 +82,15 @@
     - name: pip3 install base58
       raw: pip3 install base58==1.0.0
 
+    - name: pip3 install base58
+      raw: pip3 install aries_cloudagent
+      
+    - name: pip3 install base58
+      raw: pip3 install indy_credx
+    
+    - name: pip3 install base58
+      raw: pip3 install aiohttp
+
     - name: install postgress docker for wallet
       raw: docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
 

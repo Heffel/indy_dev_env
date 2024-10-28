@@ -1467,7 +1467,7 @@ class DemoAgent:
                 "create_unique_did": json.dumps(create_unique_did),
             }
             payload = {
-                "handshake_protocols": ["didexchange/1.1"],
+                "handshake_protocols": ["didexchange/1.0"],
                 "use_public_did": public_did_connections,
             }
             if self.mediation:
