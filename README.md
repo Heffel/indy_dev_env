@@ -1,6 +1,8 @@
 # indy_dev_env 
 
-Virtual Machine Based Environment for Hyperledger Indy SDK ZKP experimentation 
+Virtual Machine Based Environment for Hyperledger Indy SDK ZKP experimentation
+
+Esse ambiente é contruído baseado em Vagrant 2.2.19 | Virtualbox 6.1.50   
 
 Uma vez que o download do repo tenha sido efetuado: 
 
