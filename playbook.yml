@@ -82,7 +82,7 @@
     - name: pip3 install base58
       raw: pip3 install base58==1.0.0
 
-    - name: pip3 install aries_cloudagent
+    - name: pip3 install cloudagent
       raw: pip3 install aries_cloudagent
       
     - name: pip3 install credx
