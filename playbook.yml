@@ -86,7 +86,7 @@
       raw: pip3 install aries_cloudagent
       
     - name: pip3 install base58
-      raw: pip3 install indy_credx
+      raw: pip3 install indy_credx==0.3.3
     
     - name: pip3 install base58
       raw: pip3 install aiohttp
