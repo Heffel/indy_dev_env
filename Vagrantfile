@@ -10,13 +10,13 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  config.vm.define "indy_dev_env"
-  config.vm.hostname = "indy_dev_env"
+  config.vm.define "indy-dev-env"
+  config.vm.hostname = "indy-dev-env"
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/bionic64"
   config.vm.provider :virtualbox do |vb|
-        vb.name = "indy_dev_env"
+        vb.name = "indy-dev-env"
     end
 
   config.vm.synced_folder "../", "/lab", type: "virtualbox"
