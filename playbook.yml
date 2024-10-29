@@ -91,11 +91,11 @@
     - name: pip3 install aiohttp
       raw: pip3 install aiohttp
 
-    - name: pip install cloudagent
-      raw: pip install aries-cloudagent==0.8.2
-
     - name: install postgress docker for wallet
       raw: docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres -c 'log_statement=all' -c 'logging_collector=on' -c 'log_destination=stderr'
 
     - name: downloading von network
-      raw: git clone https://github.com/bcgov/von-network.git /home/vagrant/von-network
+      raw: git clone https://github.com/bcgov/von-network.git /home/vagrant/von-network   
+
+    #- name: pip install cloudagent
+    #  raw: pip install aries-cloudagent==0.8.2

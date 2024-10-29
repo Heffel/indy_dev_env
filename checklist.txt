@@ -13,6 +13,4 @@ prompt_toolkit~=2.0.10
 web.py~=0.62
 pygments~=2.18
 qrcode~=7.4
-
-docker ps
-
+aries-cloudagent==0.8.2
