@@ -83,7 +83,7 @@
       raw: pip3 install base58==1.0.0
 
     - name: pip3 install cloudagent
-      raw: pip3 install aries_cloudagent
+      raw: pip3 install aries_cloudagent==0.8.2
       
     - name: pip3 install credx
       raw: pip3 install indy_credx==0.3.3
