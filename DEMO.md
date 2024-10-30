@@ -97,7 +97,7 @@ uma vez feita e edição, para salvar as modificações digite:
 cd ~ 
 ```  
 
-02b.2 - Informe o seguinte comando 
+- 02b.2 - Informe o seguinte comando 
 ```bash  
 cp -r ../../lab/indy_dev_env/runners/ ../../lab/runners 
 ```  
@@ -105,18 +105,18 @@ cp -r ../../lab/indy_dev_env/runners/ ../../lab/runners
 
 03 - Modificando os agentes aca-py.org: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
 
-03.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
+- 03.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
 
 
-03.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
+- 03.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
 
-03.3 - Na máquina virtual, do diretório home/vagrant navegue até 'lab' informando: 
+- 03.3 - Na máquina virtual, do diretório home/vagrant navegue até 'lab' informando: 
 
 ```bash  
 cd ../../lab/ 
 ```  
 
-03.4 - Uma vez em 'lab' acesse o arquivo support/agent.py: 
+- 03.4 - Uma vez em 'lab' acesse o arquivo support/agent.py: 
 ```bash  
 sudo vi runners/support/agent.py 
 ```  
@@ -135,7 +135,7 @@ LEDGER_URL = os.getenv("LEDGER_URL")
 GENESIS_FILE = os.getenv("GENESIS_FILE")	 
 ```  
 
-Aperte a tecla ENTER para sair do modo localização. Navegue com o direcional até o valor passado. Aperte a tecla "i" para iniciar o modo "insert" identificado pelo valor "-- INSERT --" mostrado no rodapé do arquivo. Acrescente o ip obtido para a von-network, para este exemplo 192.168.178.172:9000. Após a modificação, aperte a tecla ESC para encerrar o modo "insert", verifique que "-- INSERT --" não mais aparece no rodapé da página. Agora o código deve parecer com: 
+- 03.4 - Aperte a tecla ENTER para sair do modo localização. Navegue com o direcional até o valor passado. Aperte a tecla "i" para iniciar o modo "insert" identificado pelo valor "-- INSERT --" mostrado no rodapé do arquivo. Acrescente o ip obtido para a von-network, para este exemplo 192.168.178.172:9000. Após a modificação, aperte a tecla ESC para encerrar o modo "insert", verifique que "-- INSERT --" não mais aparece no rodapé da página. Agora o código deve parecer com: 
 ```python  
 GENESIS_URL = os.getenv("GENESIS_URL") 
 LEDGER_URL = os.getenv("LEDGER_URL", "http://192.168.178.172:9000") 
