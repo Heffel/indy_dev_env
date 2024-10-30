@@ -18,7 +18,7 @@ Uma vez que o download do repo tenha sido efetuado:
 vagrant up
 ```
 
-05 - A máquina virtual será criada com a placa de rede em modo bridge, o que significa que ela pegará um IP próprio e as portas ocupadas por aplicações rodando nela ocuparão as portas da máquina host. No caso de a máquina host possuir mais de uma interface de rede, o vagrant solicitará que o usuário escolha qual ele deve usar enquanto instala ou inicia a máquina, escolha aquela com conexão á internet.
+05 - A máquina virtual será criada com a placa de rede em modo bridge, o que significa que ela pegará um IP próprio e as portas ocupadas por aplicações rodando nela ocuparão as portas da máquina host. No caso de a máquina host possuir mais de uma interface de rede, o vagrant solicitará que o usuário escolha qual ele deve usar enquanto instala ou inicia a máquina, como demonstrado abaixo. Escolha aquela com conexão á internet.
 ```bash
 ==> indy-dev-env: Available bridged network interfaces:
 1) eth0
@@ -41,6 +41,7 @@ vagrant ssh
 pwd
 ```
 09 - O comando "ls -l" mostrará a pasta "von-network" que se trata de uma blockchain experimental Hyperledger Indy constituída de 4 nós que roda localmente e estará acessível na porta 9000 quando estiver rodando. Para mais informações sobre von-network consulte: https://github.com/bcgov/von-network e https://github.com/bcgov/von-network/blob/main/docs/UsingVONNetwork.md 
+
 10 - Acesse a pasta "von-network". 
 ```bash
 cd von-network
@@ -104,7 +105,7 @@ que deve retornar a versão ativa do python "3.8". Esta instalação também con
 ```bash 
 pip install aries-cloudagent
 ```  
-Devido a limitações da ferramenta de automação, ela deve ser instalada uma vez que a maquina virtual já esteja rodando.
+Devido a limitações da ferramenta de automação, ela deve ser instalada uma vez que a maquina virtual já esteja rodando. A versão instalada do aries-cloudagent deve ser 0.8.2.
 
 24 - Para listar todas as libs python instaladas com sucesso informe:
 ```bash 
