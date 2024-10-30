@@ -88,7 +88,7 @@ uma vez feita e edição, para salvar as modificações digite:
 	copie a pasta "runners" para 
 	C:/media/user/projetos/ 
 
-###OU 
+### OU 
 
 02b - Copiar a pasta 'runners' através da linha de comando da máquina virtual: 
 - 02b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
@@ -248,18 +248,20 @@ O campo Transaction conterá o atributo "Alias: faber.agent"
 
 Expanda o campo "raw data" para verificar a estrutura do esquema. 
 
-11 - De volta ao terminal, verifique que o agente Faber está rodando e gerou dados para estabelecer uma conexão: 
+11 - De volta ao terminal, verifique que o agente Faber está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
+* ### Não copie os dados aqui apresentados para conexões, utilize os gerados no terminal da própria máquina.
+
 ```bash   
 Invitation Data: 
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
 ```   
 
-12 - Copie apenas: 
+12 - Utilize apenas a parte depois de Data: 
 ```bash   
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
 ``` 
 
-e cole no terminal do agente Alice, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
+Cole no terminal do agente Alice, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
 
 13 -  O menu do agente Alice deve se parecer com: 
 ```bash   
