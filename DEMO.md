@@ -24,11 +24,11 @@ Verificador/Emissor de credencial: ACME solicitará de Alice uma apresentação 
 
 A demonstração proposta requer a realização dos passos contidos no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Caso ainda não tenha os executado, pare aqui, acesse [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) e retorne após cumprir as etapas lá elencadas.   
 
-Para a realização desta demonstração, algumas modificações devem ser aplicadas a bibliotecas e agentes. O roteiro a seguir contém os passos para execução dele.  
+Para a realização desta demonstração, algumas modificações devem ser aplicadas a bibliotecas e agentes. O roteiro a seguir contém os passos para execução dela.  
 
 01 - Modificando aiohttp: A lib aiohttp instalada durante o setup da máquina virtual conta com um parâmetro extra de entrada que não é esperado pela implementação do aca-py e deve ser removido para a demonstração. Para isto usaremos a ferramenta vi contida na instalação do ubunto OS.  
 
-01.1 - Do diretório home da máquina virtual informe:  
+01.1 - Do diretório home/vagrant da máquina virtual informe:  
 ```bash  
 sudo vi /home/vagrant/.local/lib/python3.8/site-packages/aiohttp/client_reqrep.py  
 ```  
@@ -73,36 +73,25 @@ uma vez feita e edição, para salvar as modificações digite:
 
 * acesse novamente o arquivo da lib e navegue até o trecho modificado para verificar se o arquivo foi de fato alterado. Para simplesmente sair do arquivo informe:  
 ```bash  
-:wq  
+:q  
 ```  
 
 02 - Copiando os agentes demo para a pasta lab: Como descrito no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a maquina virtual possui um diretório "lab" que está mapeado para o nível acima do diretório do projeto. O diretório "lab" permite interação de elementos da máquina host, como IDEAs, com elementos que podem ser vistos da máquina virtual. Copiaremos os agentes providos para o diretório "lab" e os executaremos de lá. Podemos fazer isto de duas formas: 
 
 2a - Copiar a pasta 'runners' através do navegador de arquivos da máquina host 
+- 02a.1 - Através do navegador de arquivos da máquina host, localize o diretório do projeto.  
+- 02a.2 - Acessando o diretório do projeto localize a pasta "runners" 
+- 02a.3 - Copie a pasta "runners" para o nível acima da pasta do projeto.  
 
-2b - Copiar a Copiar a pasta 'runners' via linho de comando da máquina virtual 
-
-02a - Copiando a pasta 'runners' através do sistema de arquivos máquina host: 
-
-02a.1 - Através do navegador de arquivos da máquina host, localize o diretório do projeto.  
-
-02a.2 - Acessando o diretório do projeto localize a pasta "runners" 
-
-02a.3 - Copie a pasta "runners" para o nível acima da pasta do projeto.  
-
-Exemplo: se a pasta do projeto está salva em  
-
-C:/media/user/projetos/indy_dev_env/ 
-
-copie para 
-
-C:/media/user/projetos/ 
+	Exemplo: se a pasta do projeto está salva em  
+	C:/media/user/projetos/indy_dev_env/ 
+	copie a pasta "runners" para 
+	C:/media/user/projetos/ 
 
 ###OU 
 
-02b - Copiando a pasta 'runners' através da linha de comando: 
-
-02b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
+2b - Copiar a pasta 'runners' através da linha de comando da máquina virtual: 
+- 02b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
 
 ```bash  
 cd ~ 
@@ -160,6 +149,6 @@ uma vez feita e edição, para salvar as modificações digite:
 ```  
 * acesse novamente o arquivo da lib e navegue até o trecho modificado para verificar se o arquivo foi de fato alterado. Para simplesmente sair do arquivo informe:  
 ```bash  
-:wq  
+:q  
 ```  
 Com esses passos realizados estamos prontos para executar a demonstração. 
