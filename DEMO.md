@@ -24,64 +24,12 @@ Verificador/Emissor de credencial: ACME solicitará de Alice uma apresentação 
 
 A demonstração proposta requer a realização dos passos contidos no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Caso ainda não tenha os executado, pare aqui, acesse [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) e retorne após cumprir as etapas lá elencadas.   
 
-Para a realização desta demonstração, algumas modificações devem ser aplicadas a bibliotecas e agentes. O roteiro a seguir contém os passos para execução dela.  
-
-01 - Modificando aiohttp: A lib aiohttp instalada durante o setup da máquina virtual conta com um parâmetro extra de entrada que não é esperado pela implementação do aca-py e deve ser removido para a demonstração. Para isto usaremos a ferramenta vi contida na instalação do ubunto OS.  
-
-01.1 - Do diretório home/vagrant da máquina virtual informe:  
-```bash  
-sudo vi /home/vagrant/.local/lib/python3.8/site-packages/aiohttp/client_reqrep.py  
-```  
-
-01.2 - Uma vez visualizando a lib digite  
-```bash  
-/@attr.s  
-```  
-
-'/' é o comando de busca  
-
-'@attr.s' é o texto que estamos procurando dentro da lib, uma vez encontrado veremos o trecho de código:  
-
-```python  
-	@attr.s(auto_attribs=True, frozen=True, slots=True, cache_hash=True)  
-	class ContentDisposition:  
-    	type: Optional[str]  
-    	parameters: "MappingProxyType[str, str]"  
-    	filename: Optional[str]  
-```  
-
-01.3 - Aperte a tecla ENTER para sair do modo localização. Navegue com o direcional até ', cache_hash=True' e apague o parâmetro, resultando em:  
-
-```python  
-	@attr.s(auto_attribs=True, frozen=True, slots=True)  
-	class ContentDisposition:  
-    	type: Optional[str]  
-    	parameters: "MappingProxyType[str, str]"  
-    	filename: Optional[str]  
-```  
-
-uma vez feita e edição, para salvar as modificações digite:  
-```bash  
-:wq  
-```  
-
-':' informar função ao vi  
-
-'w' write/escrever  
-
-'q' quit/sair  
-
-* acesse novamente o arquivo da lib e navegue até o trecho modificado para verificar se o arquivo foi de fato alterado. Para simplesmente sair do arquivo informe:  
-```bash  
-:q  
-```  
-
 02 - Copiando os agentes demo para a pasta lab: Como descrito no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a maquina virtual possui um diretório "lab" que está mapeado para o nível acima do diretório do projeto. O diretório "lab" permite interação de elementos da máquina host, como IDEAs, com elementos que podem ser vistos da máquina virtual. Copiaremos os agentes providos para o diretório "lab" e os executaremos de lá. Podemos fazer isto de duas formas: 
 
-02a - Copiar a pasta 'runners' através do navegador de arquivos da máquina host 
-- 02a.1 - Através do navegador de arquivos da máquina host, localize o diretório do projeto.  
-- 02a.2 - Acessando o diretório do projeto localize a pasta "runners" 
-- 02a.3 - Copie a pasta "runners" para o nível acima da pasta do projeto.  
+01a - Copiar a pasta 'runners' através do navegador de arquivos da máquina host 
+- 01a.1 - Através do navegador de arquivos da máquina host, localize o diretório do projeto.  
+- 01a.2 - Acessando o diretório do projeto localize a pasta "runners" 
+- 01a.3 - Copie a pasta "runners" para o nível acima da pasta do projeto.  
 
 	Exemplo: se a pasta do projeto está salva em  
 	C:/media/user/projetos/indy_dev_env/ 
@@ -90,33 +38,59 @@ uma vez feita e edição, para salvar as modificações digite:
 
 ### OU 
 
-02b - Copiar a pasta 'runners' através da linha de comando da máquina virtual: 
-- 02b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
+01b - Copiar a pasta 'runners' através da linha de comando da máquina virtual: 
+- 01b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
 
 ```bash  
 cd ~ 
 ```  
 
-- 02b.2 - Informe o seguinte comando 
+- 01b.2 - Informe o seguinte comando 
 ```bash  
 cp -r ../../lab/indy_dev_env/runners/ ../../lab/runners 
 ```  
 
 
-03 - Modificando os agentes aca-py.org: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
+02 - Modificando os agentes aca-py.org: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
 
-03.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
+02.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
 
 
-03.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
+02.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
 
-03.3 - Na máquina virtual, do diretório home/vagrant navegue até 'lab' informando: 
+02a.3 - Através do navegador de arquivos da máquina host, localize a pasta 'runners' préviamente copiada para o diretório um nível acima da pasta do projeto durante o passo 01a.3.
+
+02a.4 - Acesse a pasta 'runners'.
+
+02a.5 - Acesse a pasta 'support'.
+
+02a.6 - Acesse o arquivo 'support' através do seu editor de textos ou IDE.
+
+02a.7 - Localize a variável LEDGER_URL
+Uma vez localizada a variável LEDGER_URL o trecho de código encontrado deve se parecer com o seguinte: 
+```python  
+GENESIS_URL = os.getenv("GENESIS_URL") 
+LEDGER_URL = os.getenv("LEDGER_URL") 
+GENESIS_FILE = os.getenv("GENESIS_FILE")	 
+```  
+02a.8 - Localize os.getenv("LEDGER_URL") e acrescente uma vírgola, http:// e o ip obtido para a von-network entre aspas duplas, para este exemplo 192.168.178.172:9000 após "LEDGER_URL". Após a modificação salve. Agora o código deve parecer com: 
+```python  
+GENESIS_URL = os.getenv("GENESIS_URL") 
+LEDGER_URL = os.getenv("LEDGER_URL", "http://192.168.178.172:9000") 
+GENESIS_FILE = os.getenv("GENESIS_FILE")	 
+```
+
+
+### OU
+
+
+02b.3 - Na máquina virtual, do diretório home/vagrant navegue até 'lab' informando: 
 
 ```bash  
 cd ../../lab/ 
 ```  
 
-03.4 - Uma vez em 'lab' acesse o arquivo support/agent.py: 
+02b.4 - Uma vez em 'lab' acesse o arquivo support/agent.py: 
 ```bash  
 sudo vi runners/support/agent.py 
 ```  
@@ -135,7 +109,7 @@ LEDGER_URL = os.getenv("LEDGER_URL")
 GENESIS_FILE = os.getenv("GENESIS_FILE")	 
 ```  
 
-03.4 - Aperte a tecla ENTER para sair do modo localização. Navegue com o direcional até o valor passado. Aperte a tecla "i" para iniciar o modo "insert" identificado pelo valor "-- INSERT --" mostrado no rodapé do arquivo. Acrescente o ip obtido para a von-network, para este exemplo 192.168.178.172:9000. Após a modificação, aperte a tecla ESC para encerrar o modo "insert", verifique que "-- INSERT --" não mais aparece no rodapé da página. Agora o código deve parecer com: 
+03.4 - Pressione a tecla ENTER para sair do modo localização. Navegue com o direcional até o valor "LEDGER_URL". Pressione a tecla "i" para iniciar o modo "insert", identificado pelo valor "-- INSERT --" mostrado no rodapé do arquivo. Acrescente uma vírgola http:// e o ip obtido para a von-network entre aspas duplas, para este exemplo 192.168.178.172:9000. Após a modificação, pressione a tecla ESC para encerrar o modo "insert", verifique que "-- INSERT --" não mais aparece no rodapé da página. Agora o código deve parecer com: 
 ```python  
 GENESIS_URL = os.getenv("GENESIS_URL") 
 LEDGER_URL = os.getenv("LEDGER_URL", "http://192.168.178.172:9000") 
@@ -147,6 +121,9 @@ uma vez feita e edição, para salvar as modificações digite:
 ```bash  
 :wq  
 ```  
+
+e pressione ENTER
+
 * acesse novamente o arquivo da lib e navegue até o trecho modificado para verificar se o arquivo foi de fato alterado. Para simplesmente sair do arquivo informe:  
 ```bash  
 :q  
