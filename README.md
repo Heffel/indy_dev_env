@@ -29,7 +29,7 @@ vagrant up
 ==> indy-dev-env: being used to connect to the internet.
 ``` 
 
-06 - Uma vez criada a máquina virtual, o vagrant fara através do ansible o download de todas os SDKs (Indy-SDK), dependencias, libs python como o ares-askar e o indy-crypto, além da instalação de ferramentas como docker, docker-compose-plugin, pip, python 3.8, whois, curl, acesso ao sistema de arquivos da máquina host e mais todo o ferramental contido em uma instalação ubunto. 
+06 - Uma vez criada a máquina virtual, o vagrant fara através do ansible o download de todas os SDKs (Indy-SDK), dependencias, libs python como o ares-askar e o indy-crypto, além da instalação de ferramentas como docker, docker-compose-plugin, pip, python 3.8, whois, curl, acesso ao sistema de arquivos da máquina host e mais todo o ferramental contido em uma instalação ubuntu. 
 
 07 - Uma vez terminada a instalação, cerca de 8 minutos, informe no terminal o comando "vagrant ssh" para acessar a máquina virtual.
 ```bash
@@ -83,7 +83,7 @@ Para mais informações consulte: https://github.com/bcgov/von-network e https:/
 
 17 - Caso o desenvolvedor resolva não utilizar o von-network local, uma versão da rede roda permanentemente no endereço http://test.bcovrin.vonx.io/ . No entanto essa versão é periodicamente limpa, sendo que seus registros são apagados semanalmente.  
 
-18 - Uma vez verificado a von network, retorne ao home informando
+18 - Uma vez verificado a von network, retorne ao home/vagrant informando
 ```bash 
 cd ~
 ``` 
@@ -103,7 +103,7 @@ que deve retornar a versão ativa do python "3.8". Esta instalação também con
 
 23 - Instale a lib python ares-cloudagent através do seguinte comando
 ```bash 
-pip install aries-cloudagent
+pip install aries-cloudagent==0.8.2
 ```  
 Devido a limitações da ferramenta de automação, ela deve ser instalada uma vez que a maquina virtual já esteja rodando. A versão instalada do aries-cloudagent deve ser 0.8.2.
 
@@ -119,6 +119,6 @@ cd ../../lab
 ```  
 Uma vez em lab informe o comando "ls -l" e verifique que todos os diretórios acima do diretório do projeto git na máquina host serão listados. O diretório "lab" é o acesso da VM a máquina host, qualquer arquivo pode ser copiado para dentro e fora da VM através dele. 
 
-26 - Por fim, o ambiente roda sobre um linux ubunto com todas as capacidades, sendo possível instalar qualquer biblioteca, programa, dependência suportada pelo sistema. A VM criada é listada no Virtual Box e pode ser modificado por lá, aumentando RAM, armazenagem, processamento etc. Caso o desenvolvedor tenha conhecimento de vagrant + ansible os arquivos de ambos podem ser modificados para se adequarem a necessidade dele. 
+26 - Por fim, o ambiente roda sobre um linux ubuntu com todas as capacidades, sendo possível instalar qualquer biblioteca, programa, dependência suportada pelo sistema. A VM criada é listada no Virtual Box e pode ser modificado por lá, aumentando RAM, armazenagem, processamento etc. Caso o desenvolvedor tenha conhecimento de vagrant + ansible os arquivos de ambos podem ser modificados para se adequarem a necessidade dele. 
 
 27 - O comando "exit" retira o desenvolvedor da máquina vagrant, que continuará rodando. Uma vez fora, "vagrant halt" para a máquina virtual, assim como os serviços dela. O comando “vagrant up” sobe a VM novamente. O comando "vagrant reload" roda novamente a instalação e por fim "vagrant destroy" destrói a VM. Para uma lista de comandos acesse: https://gist.github.com/wpscholar/a49594e2e2b918f4d0c4 
