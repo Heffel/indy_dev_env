@@ -51,84 +51,14 @@ cp -r ../../lab/indy_dev_env/runners/ ../../lab/runners
 ```  
 
 
-02 - Modificando os agentes aca-py.org: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
+02 - Obtendo LEDGER_URL: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
 
 02.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
 
 
 02.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
 
-02a.3 - Através do navegador de arquivos da máquina host, localize a pasta 'runners' préviamente copiada para o diretório um nível acima da pasta do projeto durante o passo 01a.3.
 
-02a.4 - Acesse a pasta 'runners'.
-
-02a.5 - Acesse a pasta 'support'.
-
-02a.6 - Acesse o arquivo 'support' através do seu editor de textos ou IDE.
-
-02a.7 - Localize a variável LEDGER_URL
-Uma vez localizada a variável LEDGER_URL o trecho de código encontrado deve se parecer com o seguinte: 
-```python  
-GENESIS_URL = os.getenv("GENESIS_URL") 
-LEDGER_URL = os.getenv("LEDGER_URL") 
-GENESIS_FILE = os.getenv("GENESIS_FILE")	 
-```  
-02a.8 - Localize os.getenv("LEDGER_URL") e acrescente uma vírgola, http:// e o ip obtido para a von-network entre aspas duplas, para este exemplo 192.168.178.172:9000 após "LEDGER_URL". Após a modificação salve. Agora o código deve parecer com: 
-```python  
-GENESIS_URL = os.getenv("GENESIS_URL") 
-LEDGER_URL = os.getenv("LEDGER_URL", "http://192.168.178.172:9000") 
-GENESIS_FILE = os.getenv("GENESIS_FILE")	 
-```
-
-
-### OU
-
-
-02b.3 - Na máquina virtual, do diretório home/vagrant navegue até 'lab' informando: 
-
-```bash  
-cd ../../lab/ 
-```  
-
-02b.4 - Uma vez em 'lab' acesse o arquivo support/agent.py: 
-```bash  
-sudo vi runners/support/agent.py 
-```  
-
-Localize a variável LEDGER_URL 
-
-```bash  
-/LEDGER_URL 
-```  
-
-Uma vez localizada a variável LEDGER_URL o trecho de código encontrado deve se parecer com o seguinte: 
-
-```python  
-GENESIS_URL = os.getenv("GENESIS_URL") 
-LEDGER_URL = os.getenv("LEDGER_URL") 
-GENESIS_FILE = os.getenv("GENESIS_FILE")	 
-```  
-
-03.4 - Pressione a tecla ENTER para sair do modo localização. Navegue com o direcional até o valor "LEDGER_URL". Pressione a tecla "i" para iniciar o modo "insert", identificado pelo valor "-- INSERT --" mostrado no rodapé do arquivo. Acrescente uma vírgola http:// e o ip obtido para a von-network entre aspas duplas, para este exemplo 192.168.178.172:9000. Após a modificação, pressione a tecla ESC para encerrar o modo "insert", verifique que "-- INSERT --" não mais aparece no rodapé da página. Agora o código deve parecer com: 
-```python  
-GENESIS_URL = os.getenv("GENESIS_URL") 
-LEDGER_URL = os.getenv("LEDGER_URL", "http://192.168.178.172:9000") 
-GENESIS_FILE = os.getenv("GENESIS_FILE")	 
-```  
-
-uma vez feita e edição, para salvar as modificações digite:  
-
-```bash  
-:wq  
-```  
-
-e pressione ENTER
-
-* acesse novamente o arquivo da lib e navegue até o trecho modificado para verificar se o arquivo foi de fato alterado. Para simplesmente sair do arquivo informe:  
-```bash  
-:q  
-```  
-Com esses passos realizados estamos prontos para executar a demonstração. 
 
 ## INICIANDO OS AGENTES
 
@@ -160,7 +90,7 @@ cd ../../lab/runners
 
 05 - Uma vez na pasta runners execute o agente Alice através do comando: 
 ```bash   
-DEFAULT_POSTGRES=true python3 -m alice --port 8030 
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice --port 8030 
 ```   
 
 06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Faber e ACME que registrarão seus esquemas na blockchain. 
@@ -173,7 +103,7 @@ Invite details:
 
 08 - Para subir o agente Faber repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
 ```bash   
-DEFAULT_POSTGRES=true python3 -m faber --port 8020 
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m faber --port 8020 
 ```   
 
 09 - Observe que no processo de inicialização, o agente Faber exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
@@ -343,7 +273,7 @@ Alice      | schema_id HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62
 
 19 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente ACME. Para subir o agente ACME repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente ACME através do comando: 
 ```bash   
-DEFAULT_POSTGRES=true python3 -m acme --port 8040 
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m acme --port 8040 
 ```   
 
 20 - Observe que no processo de inicialização, o agente ACME exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
