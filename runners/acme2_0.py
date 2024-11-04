@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import sys
+import datetime
 
 ####begin added code######
 import random
@@ -13,12 +14,12 @@ from uuid import uuid4
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # noqa
 
-from runners.agent_container import (  # noqa:E402
+from agent_container import (  # noqa:E402
     AriesAgent,
     arg_parser,
     create_agent_with_args,
 )
-from runners.support.utils import (  # noqa:E402
+from support.utils import (  # noqa:E402
     check_requires,
     log_msg,
     log_status,
@@ -111,6 +112,7 @@ class AcmeAgent(AriesAgent):
         pass  # employee id schema does not support revocation
 
     async def handle_present_proof_v2_0(self, message):
+
         state = message["state"]
         pres_ex_id = message["pres_ex_id"]
         self.log(f"Presentation: state = {state}, pres_ex_id = {pres_ex_id}")
@@ -129,7 +131,7 @@ class AcmeAgent(AriesAgent):
             pres_req = message["by_format"]["pres_request"]["indy"]
             pres = message["by_format"]["pres"]["indy"]
             is_proof_of_education = (
-                pres_req["name"] == "Proof of Education"
+                    pres_req["name"] == "Proof of Education"
             )
             if is_proof_of_education:
                 log_status("#28.1 Received proof of education, check claims")
@@ -154,7 +156,7 @@ class AcmeAgent(AriesAgent):
                 self.log("#28.1 Received ", pres_req["name"])
                 ##########BEGIN ADDED CODE###########
                 ##########ALSO "pass" WAS COMMENTED###########
-            #pass
+            # pass
 
     async def handle_basicmessages(self, message):
         self.log("Received message:", message["content"])

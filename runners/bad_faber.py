@@ -11,18 +11,18 @@ from qrcode import QRCode
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from runners.agent_container import (  # noqa:E402
+from agent_container import (  # noqa:E402
     AriesAgent,
     arg_parser,
     create_agent_with_args,
 )
-from runners.support.agent import (  # noqa:E402
+from support.agent import (  # noqa:E402
     CRED_FORMAT_INDY,
     CRED_FORMAT_JSON_LD,
     CRED_FORMAT_VC_DI,
     SIG_TYPE_BLS,
 )
-from runners.support.utils import log_msg, log_status, prompt, prompt_loop  # noqa:E402
+from support.utils import log_msg, log_status, prompt, prompt_loop  # noqa:E402
 
 CRED_PREVIEW_TYPE = "https://didcomm.org/issue-credential/2.0/credential-preview"
 SELF_ATTESTED = os.getenv("SELF_ATTESTED")
@@ -36,24 +36,24 @@ LOGGER = logging.getLogger(__name__)
 
 class FaberAgent(AriesAgent):
     def __init__(
-            self,
-            ident: str,
-            http_port: int,
-            admin_port: int,
-            no_auto: bool = False,
-            endorser_role: str = None,
-            revocation: bool = False,
-            anoncreds_legacy_revocation: str = None,
-            log_file: str = None,
-            log_config: str = None,
-            log_level: str = None,
-            **kwargs,
+        self,
+        ident: str,
+        http_port: int,
+        admin_port: int,
+        no_auto: bool = False,
+        endorser_role: str = None,
+        revocation: bool = False,
+        anoncreds_legacy_revocation: str = None,
+        log_file: str = None,
+        log_config: str = None,
+        log_level: str = None,
+        **kwargs,
     ):
         super().__init__(
             ident,
             http_port,
             admin_port,
-            prefix="Faber-Verifier",
+            prefix="Faber",
             no_auto=no_auto,
             endorser_role=endorser_role,
             revocation=revocation,
@@ -79,18 +79,19 @@ class FaberAgent(AriesAgent):
         return self._connection_ready.done() and self._connection_ready.result()
 
     def generate_credential_offer(self, aip, cred_type, cred_def_id, exchange_tracing):
-        log_msg("Starting generate_credential_offer method")
+        age = 12
+        d = datetime.date.today()
+        birth_date = datetime.date(d.year - age, d.month, d.day)
+        birth_date_format = "%Y%m%d"
         if aip == 10:
-            log_msg("AIP level 10 detected")
             # define attributes to send for credential
             self.cred_attrs[cred_def_id] = {
                 "name": "Alice Smith",
-                "date": datetime.date.isoformat(datetime.date.today()),
-                "employee_id": "ACME0009",
-                "position": "CEO",
+                "date": "2018-05-28",
+                "degree": "kindergartner",
+                "birthdate_dateint": birth_date.strftime(birth_date_format),
                 "timestamp": str(int(time.time())),
             }
-            log_msg(f"Credential attributes set: {self.cred_attrs[cred_def_id]}")
 
             cred_preview = {
                 "@type": CRED_PREVIEW_TYPE,
@@ -99,8 +100,6 @@ class FaberAgent(AriesAgent):
                     for (n, v) in self.cred_attrs[cred_def_id].items()
                 ],
             }
-            log_msg(f"Credential preview created: {cred_preview}")
-
             offer_request = {
                 "connection_id": self.connection_id,
                 "cred_def_id": cred_def_id,
@@ -109,21 +108,18 @@ class FaberAgent(AriesAgent):
                 "credential_preview": cred_preview,
                 "trace": exchange_tracing,
             }
-            log_msg(f"Offer request created: {offer_request}")
             return offer_request
 
         elif aip == 20:
-            log_msg("AIP level 20 detected")
             if cred_type == CRED_FORMAT_INDY:
-                log_msg("Credential type: CRED_FORMAT_INDY")
                 self.cred_attrs[cred_def_id] = {
                     "name": "Alice Smith",
-                    "date": datetime.date.isoformat(datetime.date.today()),
-                    "employee_id": "ACME0009",
-                    "position": "CEO",
+                    "date": "2018-05-28",
+                    "degree": "kindergartner",
+                    "birthdate_dateint": birth_date.strftime(birth_date_format),
                     "timestamp": str(int(time.time())),
                 }
-                log_msg(f"Credential attributes set: {self.cred_attrs[cred_def_id]}")
+                log_msg(f"Generated credential attributes: {self.cred_attrs[cred_def_id]}")
 
                 cred_preview = {
                     "@type": CRED_PREVIEW_TYPE,
@@ -132,8 +128,6 @@ class FaberAgent(AriesAgent):
                         for (n, v) in self.cred_attrs[cred_def_id].items()
                     ],
                 }
-                log_msg(f"Credential preview created: {cred_preview}")
-
                 offer_request = {
                     "connection_id": self.connection_id,
                     "comment": f"Offer on cred def id {cred_def_id}",
@@ -142,19 +136,16 @@ class FaberAgent(AriesAgent):
                     "filter": {"indy": {"cred_def_id": cred_def_id}},
                     "trace": exchange_tracing,
                 }
-                log_msg(f"Offer request created: {offer_request}")
                 return offer_request
 
             elif cred_type == CRED_FORMAT_VC_DI:
-                log_msg("Credential type: CRED_FORMAT_VC_DI")
                 self.cred_attrs[cred_def_id] = {
                     "name": "Alice Smith",
-                    "date": datetime.date.isoformat(datetime.date.today()),
-                    "employee_id": "ACME0009",
-                    "position": "CEO",
+                    "date": "2018-05-28",
+                    "degree": "kindergartner",
+                    "birthdate_dateint": birth_date.strftime(birth_date_format),
                     "timestamp": str(int(time.time())),
                 }
-                log_msg(f"Credential attributes set: {self.cred_attrs[cred_def_id]}")
 
                 cred_preview = {
                     "@type": CRED_PREVIEW_TYPE,
@@ -163,8 +154,6 @@ class FaberAgent(AriesAgent):
                         for (n, v) in self.cred_attrs[cred_def_id].items()
                     ],
                 }
-                log_msg(f"Credential preview created: {cred_preview}")
-
                 offer_request = {
                     "connection_id": self.connection_id,
                     "comment": f"Offer on cred def id {cred_def_id}",
@@ -173,7 +162,39 @@ class FaberAgent(AriesAgent):
                     "filter": {"vc_di": {"cred_def_id": cred_def_id}},
                     "trace": exchange_tracing,
                 }
-                log_msg(f"Offer request created: {offer_request}")
+                return offer_request
+
+            elif cred_type == CRED_FORMAT_JSON_LD:
+                offer_request = {
+                    "connection_id": self.connection_id,
+                    "filter": {
+                        "ld_proof": {
+                            "credential": {
+                                "@context": [
+                                    "https://www.w3.org/2018/credentials/v1",
+                                    "https://w3id.org/citizenship/v1",
+                                    "https://w3id.org/security/bbs/v1",
+                                ],
+                                "type": [
+                                    "VerifiableCredential",
+                                    "PermanentResident",
+                                ],
+                                "id": "https://credential.example.com/residents/1234567890",
+                                "issuer": self.did,
+                                "issuanceDate": "2020-01-01T12:00:00Z",
+                                "credentialSubject": {
+                                    "type": ["PermanentResident"],
+                                    "givenName": "ALICE",
+                                    "familyName": "SMITH",
+                                    "gender": "Female",
+                                    "birthCountry": "Bahamas",
+                                    "birthDate": "1958-07-17",
+                                },
+                            },
+                            "options": {"proofType": SIG_TYPE_BLS},
+                        }
+                    },
+                }
                 return offer_request
 
             else:
@@ -182,7 +203,6 @@ class FaberAgent(AriesAgent):
         else:
             raise Exception(f"Error invalid AIP level: {self.aip}")
 
-    #MODIFICAR AQUI
     def generate_proof_request_web_request(
             self, aip, cred_type, revocation, exchange_tracing, connectionless=False
     ):
@@ -230,7 +250,6 @@ class FaberAgent(AriesAgent):
                     "restrictions": [{"schema_name": "degree schema"}],
                 }
             ]
-            log_msg("test zero-knowledge proofs. aip==10")
             indy_proof_request = {
                 "name": "Proof of Education",
                 "version": "1.0",
@@ -251,6 +270,7 @@ class FaberAgent(AriesAgent):
             }
             if not connectionless:
                 proof_request_web_request["connection_id"] = self.connection_id
+            log_msg(f"Generated proof request web request: {proof_request_web_request}")
             return proof_request_web_request
 
         elif aip == 20:
@@ -287,7 +307,6 @@ class FaberAgent(AriesAgent):
                     )
                 req_preds = [
                     # test zero-knowledge proofs
-
                     {
                         "name": "birthdate_dateint",
                         "p_type": "<=",
@@ -295,7 +314,6 @@ class FaberAgent(AriesAgent):
                         "restrictions": [{"schema_name": "degree schema"}],
                     }
                 ]
-                log_msg("test zero-knowledge proofs. aip==20")
                 indy_proof_request = {
                     "name": "Proof of Education",
                     "version": "1.0",
@@ -317,6 +335,7 @@ class FaberAgent(AriesAgent):
                 }
                 if not connectionless:
                     proof_request_web_request["connection_id"] = self.connection_id
+                log_msg(f"Generated proof request web request: {proof_request_web_request}")
                 return proof_request_web_request
 
             elif cred_type == CRED_FORMAT_VC_DI:
@@ -397,6 +416,69 @@ class FaberAgent(AriesAgent):
                     ] = "required"
                 if not connectionless:
                     proof_request_web_request["connection_id"] = self.connection_id
+                log_msg(f"Generated proof request web request: {proof_request_web_request}")
+                return proof_request_web_request
+
+            elif cred_type == CRED_FORMAT_JSON_LD:
+                proof_request_web_request = {
+                    "comment": "test proof request for json-ld",
+                    "presentation_request": {
+                        "dif": {
+                            "options": {
+                                "challenge": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+                                "domain": "4jt78h47fh47",
+                            },
+                            "presentation_definition": {
+                                "id": "32f54163-7166-48f1-93d8-ff217bdb0654",
+                                "format": {"ldp_vp": {"proof_type": [SIG_TYPE_BLS]}},
+                                "input_descriptors": [
+                                    {
+                                        "id": "citizenship_input_1",
+                                        "name": "EU Driver's License",
+                                        "schema": [
+                                            {
+                                                "uri": "https://www.w3.org/2018/credentials#VerifiableCredential"
+                                            },
+                                            {
+                                                "uri": "https://w3id.org/citizenship#PermanentResident"
+                                            },
+                                        ],
+                                        "constraints": {
+                                            "limit_disclosure": "required",
+                                            "is_holder": [
+                                                {
+                                                    "directive": "required",
+                                                    "field_id": [
+                                                        "1f44d55f-f161-4938-a659-f8026467f126"
+                                                    ],
+                                                }
+                                            ],
+                                            "fields": [
+                                                {
+                                                    "id": "1f44d55f-f161-4938-a659-f8026467f126",
+                                                    "path": [
+                                                        "$.credentialSubject.familyName"
+                                                    ],
+                                                    "purpose": "The claim must be from one of the specified person",
+                                                    "filter": {"const": "SMITH"},
+                                                },
+                                                {
+                                                    "path": [
+                                                        "$.credentialSubject.givenName"
+                                                    ],
+                                                    "purpose": "The claim must be from one of the specified person",
+                                                },
+                                            ],
+                                        },
+                                    }
+                                ],
+                            },
+                        }
+                    },
+                }
+                if not connectionless:
+                    proof_request_web_request["connection_id"] = self.connection_id
+                log_msg(f"Generated proof request web request: {proof_request_web_request}")
                 return proof_request_web_request
 
             else:
@@ -413,7 +495,7 @@ async def main(args):
         print("Got extra args:", extra_args)
     faber_agent = await create_agent_with_args(
         args,
-        ident="faber-verifier",
+        ident="faber",
         extra_args=extra_args,
     )
 
@@ -452,12 +534,12 @@ async def main(args):
             extra_args=extra_args,
         )
 
-        faber_schema_name = "employee id schema"
+        faber_schema_name = "degree schema"
         faber_schema_attrs = [
             "name",
             "date",
-            "employee_id",
-            "position",
+            "degree",
+            "birthdate_dateint",
             "timestamp",
         ]
         if faber_agent.cred_type in [CRED_FORMAT_INDY, CRED_FORMAT_VC_DI]:
@@ -522,7 +604,7 @@ async def main(args):
 
         upgraded_to_anoncreds = False
         async for option in prompt_loop(
-                options.replace("%CRED_TYPE%", faber_agent.cred_type)
+            options.replace("%CRED_TYPE%", faber_agent.cred_type)
         ):
             if option is not None:
                 option = option.strip()
@@ -530,8 +612,8 @@ async def main(args):
             # Anoncreds has different endpoints for revocation
             is_anoncreds = False
             if (
-                    faber_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
-                    or upgraded_to_anoncreds
+                faber_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
+                or upgraded_to_anoncreds
             ):
                 is_anoncreds = True
 
@@ -620,6 +702,14 @@ async def main(args):
                             exchange_tracing,
                         )
 
+                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
+                        offer_request = faber_agent.agent.generate_credential_offer(
+                            faber_agent.aip,
+                            faber_agent.cred_type,
+                            None,
+                            exchange_tracing,
+                        )
+
                     elif faber_agent.cred_type == CRED_FORMAT_VC_DI:
                         offer_request = faber_agent.agent.generate_credential_offer(
                             faber_agent.aip,
@@ -658,6 +748,16 @@ async def main(args):
 
                 elif faber_agent.aip == 20:
                     if faber_agent.cred_type == CRED_FORMAT_INDY:
+                        proof_request_web_request = (
+                            faber_agent.agent.generate_proof_request_web_request(
+                                faber_agent.aip,
+                                faber_agent.cred_type,
+                                faber_agent.revocation,
+                                exchange_tracing,
+                            )
+                        )
+
+                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
                         proof_request_web_request = (
                             faber_agent.agent.generate_proof_request_web_request(
                                 faber_agent.aip,
@@ -706,15 +806,15 @@ async def main(args):
                     )
                     pres_req_id = proof_request["presentation_exchange_id"]
                     url = (
-                                  os.getenv("WEBHOOK_TARGET")
-                                  or (
-                                          "http://"
-                                          + os.getenv("DOCKERHOST").replace(
-                                      "{PORT}", str(faber_agent.agent.admin_port + 1)
-                                  )
-                                          + "/webhooks"
-                                  )
-                          ) + f"/pres_req/{pres_req_id}/"
+                        os.getenv("WEBHOOK_TARGET")
+                        or (
+                            "http://"
+                            + os.getenv("DOCKERHOST").replace(
+                                "{PORT}", str(faber_agent.agent.admin_port + 1)
+                            )
+                            + "/webhooks"
+                        )
+                    ) + f"/pres_req/{pres_req_id}/"
                     log_msg(f"Proof request url: {url}")
                     qr = QRCode(border=1)
                     qr.add_data(url)
@@ -725,6 +825,16 @@ async def main(args):
 
                 elif faber_agent.aip == 20:
                     if faber_agent.cred_type == CRED_FORMAT_INDY:
+                        proof_request_web_request = (
+                            faber_agent.agent.generate_proof_request_web_request(
+                                faber_agent.aip,
+                                faber_agent.cred_type,
+                                faber_agent.revocation,
+                                exchange_tracing,
+                                connectionless=True,
+                            )
+                        )
+                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
                         proof_request_web_request = (
                             faber_agent.agent.generate_proof_request_web_request(
                                 faber_agent.aip,
@@ -755,13 +865,13 @@ async def main(args):
                     )
                     pres_req_id = proof_request["pres_ex_id"]
                     url = (
-                            "http://"
-                            + os.getenv("DOCKERHOST").replace(
-                        "{PORT}", str(faber_agent.agent.admin_port + 1)
-                    )
-                            + "/webhooks/pres_req/"
-                            + pres_req_id
-                            + "/"
+                        "http://"
+                        + os.getenv("DOCKERHOST").replace(
+                            "{PORT}", str(faber_agent.agent.admin_port + 1)
+                        )
+                        + "/webhooks/pres_req/"
+                        + pres_req_id
+                        + "/"
                     )
                     log_msg(f"Proof request url: {url}")
                     qr = QRCode(border=1)
@@ -797,8 +907,8 @@ async def main(args):
                 rev_reg_id = (await prompt("Enter revocation registry ID: ")).strip()
                 cred_rev_id = (await prompt("Enter credential revocation ID: ")).strip()
                 publish = (
-                              await prompt("Publish now? [Y/N]: ", default="N")
-                          ).strip() in "yY"
+                    await prompt("Publish now? [Y/N]: ", default="N")
+                ).strip() in "yY"
 
                 try:
                     endpoint = (
@@ -926,7 +1036,7 @@ async def main(args):
 
 
 if __name__ == "__main__":
-    parser = arg_parser(ident="faber-verifier", port=8040)
+    parser = arg_parser(ident="faber", port=8020)
     args = parser.parse_args()
 
     ENABLE_PYDEVD_PYCHARM = os.getenv("ENABLE_PYDEVD_PYCHARM", "").lower()
@@ -944,7 +1054,7 @@ if __name__ == "__main__":
             import pydevd_pycharm
 
             print(
-                "Faber-Verifier remote debugging to "
+                "Faber remote debugging to "
                 f"{PYDEVD_PYCHARM_HOST}:{PYDEVD_PYCHARM_CONTROLLER_PORT}"
             )
             pydevd_pycharm.settrace(

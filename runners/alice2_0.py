@@ -9,12 +9,12 @@ from urllib.parse import urlparse
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from runners.agent_container import (  # noqa:E402
+from agent_container import (  # noqa:E402
     AriesAgent,
     arg_parser,
     create_agent_with_args,
 )
-from runners.support.utils import (  # noqa:E402
+from support.utils import (  # noqa:E402
     check_requires,
     log_msg,
     log_status,
@@ -28,20 +28,35 @@ DEMO_EXTRA_AGENT_ARGS = os.getenv("DEMO_EXTRA_AGENT_ARGS")
 logging.basicConfig(level=logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 
+'''
+async def handle_proof_request_state(state):
+    log_msg(f"PASSEI AQUI")
+    log_msg(f"Received proof request state: {state}")
+    if state == "verified":
+        log_msg("Proof request succeeded")
+    else:
+        log_msg("Proof request failed")
+
+
+async def webhook_listener(topic, payload):
+    if topic == "present_proof":
+        state = payload.get("state")
+        await handle_proof_request_state(state)
+'''
 
 class AliceAgent(AriesAgent):
     def __init__(
-        self,
-        ident: str,
-        http_port: int,
-        admin_port: int,
-        no_auto: bool = False,
-        aip: int = 20,
-        endorser_role: str = None,
-        log_file: str = None,
-        log_config: str = None,
-        log_level: str = None,
-        **kwargs,
+            self,
+            ident: str,
+            http_port: int,
+            admin_port: int,
+            no_auto: bool = False,
+            aip: int = 20,
+            endorser_role: str = None,
+            log_file: str = None,
+            log_config: str = None,
+            log_level: str = None,
+            **kwargs,
     ):
         super().__init__(
             ident,
@@ -155,10 +170,15 @@ async def main(args):
 
         await alice_agent.initialize(the_agent=agent)
 
+        # FOR DISPLAYING ALL CREDENTIALS
+        async def display_all_credentials(self):
+            credentials = await self.admin_GET("/credentials")
+            log_msg(f"All credentials: {credentials}")
+
         log_status("#9 Input faber.py invitation details")
         await input_invitation(alice_agent)
 
-        options = "    (3) Send Message\n" "    (4) Input New Invitation\n"
+        options = "    (3) Send Message\n" "    (4) Input New Invitation\n" "    (5) Display All Credentials\n"
         if alice_agent.endorser_role and alice_agent.endorser_role == "author":
             options += "    (D) Set Endorser's DID\n"
         if alice_agent.multitenant:
@@ -172,6 +192,10 @@ async def main(args):
 
             if option is None or option in "xX":
                 break
+
+            # Display all credentials
+            elif option in "5":
+                await display_all_credentials(alice_agent.agent)
 
             elif option in "dD" and alice_agent.endorser_role:
                 endorser_did = await prompt("Enter Endorser's DID: ")
