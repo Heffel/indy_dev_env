@@ -423,7 +423,7 @@ Alice      | No 'by_format' in message: {'connection_id': '678489c3-e4ff-4700-ae
 All credentials: {'results': [{'referent': '743bd53a-6a4e-4220-8372-9a86a455359b', 'schema_id': 'Aj3WVTqSoLpEwEHJnENwqv:2:degree schema:62.15.36', 'cred_def_id': 'Aj3WVTqSoLpEwEHJnENwqv:3:CL:99:faber.agent.degree_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1730755630', 'date': '2018-05-28', 'name': 'Alice Smith', 'birthdate_dateint': '20001104', 'degree': 'Maths'}}, {'referent': 'a89f3d49-9bd7-4135-bd3e-e3a85b2acd55', 'schema_id': 'EuCjY2Cbt7WYyVGp4ch3AT:2:employee id schema:10.88.8', 'cred_def_id': 'EuCjY2Cbt7WYyVGp4ch3AT:3:CL:108:acme.agent.employee_id_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'name': 'Alice Smith', 'date': '2024-11-04', 'employee_id': 'ACME0009', 'position': 'CEO'}}]}
 ``` 
 
-Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Faber, 8031 para Alice e 8041 para ACME ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará diponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
+Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Faber, 8031 para Alice e 8041 para ACME ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará disponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
 Para este exemplo a URL  do localhost é http://192.168.178.172
 
 http://192.168.178.172:8021/api/doc - FABER
@@ -434,3 +434,25 @@ http://192.168.178.172:8041/api/doc - ACME
 
 
 ![image](https://github.com/user-attachments/assets/90722dd6-5afa-47e5-ace3-63cf9d1fc600)
+
+Vejamos um exemplo de como podemos consulta as credenciais armazenadas de Alice:
+
+1 - Acesse http://192.168.178.172:8031/api/doc
+
+2 - Localize a opção: "GET / credentials" e informe os campos para o número de credenciais o índice de procura e deixe WQL no terceiro campo
+![image](https://github.com/user-attachments/assets/342d155b-7cf6-42ba-8e04-e7a952b3baa0)
+
+3 - Clique em "EXECUTE"
+
+4 - Role a página e confira as credenciais no corpo da resposta:
+![image](https://github.com/user-attachments/assets/ba08ba8b-b4eb-4817-876e-340dd10c5e1f)
+
+
+* Mais informações de como utilizar a API podem ser encontradas nos links acima das opções da mesma:
+![image](https://github.com/user-attachments/assets/cdb89631-aeab-4722-b81e-3620d0a10223)
+
+
+
+
+
+
