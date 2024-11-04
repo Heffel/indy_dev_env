@@ -176,7 +176,8 @@ Alice      | Connected
 Alice      | Check for endorser role ... 
 Connect duration: 0.35s 
     (3) Send Message 
-    (4) Input New Invitation 
+    (4) Input New Invitation
+    (5) Display All Credentials 
     (X) Exit?                                                                                                                                                                                                                               
 
 [3/4/X]                          
@@ -204,7 +205,8 @@ Alice      | Connected
 Alice      | Check for endorser role ... 
 Connect duration: 0.27s 
     (3) Send Message 
-    (4) Input New Invitation 
+    (4) Input New Invitation
+    (5) Display All Credentials
     (X) Exit?                                                                                                                                                                                                                                  
 [3/4/X] 3                                                                                                                                                                                                                                      
 Enter message: Hellow from Alice                                                                                                                                                                                                               
@@ -269,7 +271,10 @@ Alice      | cred_def_id HhcefS5SXBKbdqRRMr9wXd:3:CL:8:faber.agent.degree_schema
 Alice      | schema_id HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62 
 ```   
 
-18 - No browser, acesse novamente o Domain da von-network e observe que faber gerou novas entradas referentes a credencial emitida. Pode ser necessário um "refresh" na página para mostrar as novas entradas caso não estejam aparecendo, pressione as teclas CTROL e F5 
+18 - Verifique no agente Alice o recibemento da nova credencial. Agora a opção 5 listará uma credencial que deve parecer como a seguinte:
+```bash
+All credentials: {'results': [{'referent': '743bd53a-6a4e-4220-8372-9a86a455359b', 'schema_id': 'Aj3WVTqSoLpEwEHJnENwqv:2:degree schema:62.15.36', 'cred_def_id': 'Aj3WVTqSoLpEwEHJnENwqv:3:CL:99:faber.agent.degree_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1730755630', 'name': 'Alice Smith', 'birthdate_dateint': '20001104', 'date': '2018-05-28', 'degree': 'Maths'}}]}
+``` 
 
 19 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente ACME. Para subir o agente ACME repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente ACME através do comando: 
 ```bash   
@@ -366,7 +371,7 @@ Expanda o campo "raw data" para verificar a estrutura do esquema.
 
 23 - Em ACME, assim como com Faber, copie os dados de conexão e informe em Alice. Alice exibirá os dados da resposta do convite. 
 
-22 -  O menu do agente Alice deve se parecer com: 
+22 -  O menu do agente ACME deve se parecer com: 
 ```bash   
 Acme       | Connected 
 acme.agent handle_connections completed completed 
@@ -378,7 +383,7 @@ acme.agent handle_connections completed completed
 [1/2/3/X]              
 ```   
 
-No cenário proposto, ACME solicitará de Alice uma apresentação onde está deve prover uma credencial com prova de sua graduação, que foi gerada anteriormente por Faber. Uma vez feita a solicitação, Alice irá responder automaticamente com a credencial apropriada que será validada por ACME. ACME por sua vez emitirá uma segunda credencial verificável para Alice, com o cargo de CEO, como podemos observar no código do agente ACME: 
+No cenário proposto, ACME solicitará de Alice uma apresentação onde está deve prover uma credencial com prova de sua graduação, que foi gerada anteriormente por Faber. Uma vez feita a solicitação, Alice irá responder automaticamente com a credencial apropriada que será validada por ACME. Em seguida, o operador de ACME por sua vez emitirá uma segunda credencial verificável para Alice, através da opção 1, com o cargo de CEO. Podemos observar no código do agente ACME: 
 
 ```python   
                 agent.cred_attrs[cred_def_id] = { 
@@ -405,11 +410,27 @@ No cenário proposto, ACME solicitará de Alice uma apresentação onde está de
                 ) 
 ```   
 
-23 - Em Acme selecione a opção 2 
+23 - Em ACME selecione a opção 2 
 
 24 - Alice responderá com a credencial de Faber: 
 
 ```bash   
 #24 Query for credentials in the wallet that satisfy the proof request 
 Alice      | No 'by_format' in message: {'connection_id': '678489c3-e4ff-4700-aec9-acd7eccbd101', 'role': 'prover', 'initiator': 'external', 'auto_verify': False, 'thread_id': '2d99ba53-f113-4434-a49d-2f2608bf8194', 'state': 'request-received', 'trace': False, 'created_at': '2024-10-30T06:55:01.257315Z', 'updated_at': '2024-10-30T06:55:01.257315Z', 'pres_ex_id': '837ce7ea-a06c-48c6-aff7-1dae9a92eb79'} 
-```  
+```
+25 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma. Agora a opção 5 listará duas credenciais que deve parecer como a seguinte:
+```bash
+All credentials: {'results': [{'referent': '743bd53a-6a4e-4220-8372-9a86a455359b', 'schema_id': 'Aj3WVTqSoLpEwEHJnENwqv:2:degree schema:62.15.36', 'cred_def_id': 'Aj3WVTqSoLpEwEHJnENwqv:3:CL:99:faber.agent.degree_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1730755630', 'date': '2018-05-28', 'name': 'Alice Smith', 'birthdate_dateint': '20001104', 'degree': 'Maths'}}, {'referent': 'a89f3d49-9bd7-4135-bd3e-e3a85b2acd55', 'schema_id': 'EuCjY2Cbt7WYyVGp4ch3AT:2:employee id schema:10.88.8', 'cred_def_id': 'EuCjY2Cbt7WYyVGp4ch3AT:3:CL:108:acme.agent.employee_id_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'name': 'Alice Smith', 'date': '2024-11-04', 'employee_id': 'ACME0009', 'position': 'CEO'}}]}
+``` 
+
+Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Faber, 8031 para Alice e 8041 para ACME ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará diponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
+Para este exemplo a URL  do localhost é http://192.168.178.172
+
+http://192.168.178.172:8021/api/doc - FABER
+
+http://192.168.178.172:8031/api/doc - ALICE
+
+http://192.168.178.172:8041/api/doc - ACME
+
+
+![image](https://github.com/user-attachments/assets/90722dd6-5afa-47e5-ace3-63cf9d1fc600)
