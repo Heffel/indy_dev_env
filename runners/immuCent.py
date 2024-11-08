@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 
 
-class VaccinationAgent(AriesAgent):
+class ImmunizationAgent(AriesAgent):
     def __init__(
         self,
         ident: str,
@@ -48,7 +48,7 @@ class VaccinationAgent(AriesAgent):
             ident,
             http_port,
             admin_port,
-            prefix="Vaccination",
+            prefix="Immunization",
             no_auto=no_auto,
             **kwargs,
         )
@@ -103,7 +103,7 @@ class VaccinationAgent(AriesAgent):
                 )
 
     async def handle_issue_credential_v2_0_indy(self, message):
-        pass  # vaccination id schema does not support revocation
+        pass  # immunization id schema does not support revocation
 
     async def handle_present_proof_v2_0(self, message):
         state = message["state"]
@@ -152,7 +152,7 @@ class VaccinationAgent(AriesAgent):
 
 
 async def main(args):
-    vaccination_agent = await create_agent_with_args(args, ident="vaccination")
+    immunization_agent = await create_agent_with_args(args, ident="immunization")
     # ADDED
     age = 18
     d = datetime.date.today()
@@ -164,33 +164,33 @@ async def main(args):
         log_status(
             "#1 Provision an agent and wallet, get back configuration details"
             + (
-                f" (Wallet type: {vaccination_agent.wallet_type})"
-                if vaccination_agent.wallet_type
+                f" (Wallet type: {immunization_agent.wallet_type})"
+                if immunization_agent.wallet_type
                 else ""
             )
         )
-        agent = VaccinationAgent(
-            "vaccination.agent",
-            vaccination_agent.start_port,
-            vaccination_agent.start_port + 1,
-            genesis_data=vaccination_agent.genesis_txns,
-            genesis_txn_list=vaccination_agent.genesis_txn_list,
-            no_auto=vaccination_agent.no_auto,
-            tails_server_base_url=vaccination_agent.tails_server_base_url,
-            timing=vaccination_agent.show_timing,
-            multitenant=vaccination_agent.multitenant,
-            mediation=vaccination_agent.mediation,
-            wallet_type=vaccination_agent.wallet_type,
-            seed=vaccination_agent.seed,
+        agent = ImmunizationAgent(
+            "immunization.agent",
+            immunization_agent.start_port,
+            immunization_agent.start_port + 1,
+            genesis_data=immunization_agent.genesis_txns,
+            genesis_txn_list=immunization_agent.genesis_txn_list,
+            no_auto=immunization_agent.no_auto,
+            tails_server_base_url=immunization_agent.tails_server_base_url,
+            timing=immunization_agent.show_timing,
+            multitenant=immunization_agent.multitenant,
+            mediation=immunization_agent.mediation,
+            wallet_type=immunization_agent.wallet_type,
+            seed=immunization_agent.seed,
         )
 
-        vaccination_agent.public_did = True
-        vaccination_schema_name = "vaccination id schema"
-        vaccination_schema_attrs = ["patient_id", "name", "date", "position"]
-        await vaccination_agent.initialize(
+        immunization_agent.public_did = True
+        immunization_schema_name = "immunization id schema"
+        immunization_schema_attrs = ["patient_id", "name", "date", "position"]
+        await immunization_agent.initialize(
             the_agent=agent,
-            schema_name=vaccination_schema_name,
-            schema_attrs=vaccination_schema_attrs,
+            schema_name=immunization_schema_name,
+            schema_attrs=immunization_schema_attrs,
         )
 
         with log_timer("Publish schema and cred def duration:"):
@@ -205,7 +205,7 @@ async def main(args):
             )
             # register schema and cred def
             (schema_id, cred_def_id) = await agent.register_schema_and_creddef(
-                "vaccination id schema",
+                "immunization id schema",
                 version,
                 ["patient_id", "name", "date", "position"],
                 support_revocation=False,
@@ -213,7 +213,7 @@ async def main(args):
             )
 
         # generate an invitation for Alice
-        await vaccination_agent.generate_invitation(display_qr=True, wait=True)
+        await immunization_agent.generate_invitation(display_qr=True, wait=True)
 
         options = (
             "    (1) Issue Credential\n"
@@ -256,7 +256,7 @@ async def main(args):
                 )
 
             elif option == "2":
-                log_status("#20 Request proof of health from alice")
+                log_status("#20 Request proof of health")
                 req_attrs = [
                     {
                         "name": "name",
@@ -320,22 +320,22 @@ async def main(args):
                     "Creating a new invitation, please receive "
                     "and accept this invitation using Alice agent"
                 )
-                await vaccination_agent.generate_invitation(
+                await immunization_agent.generate_invitation(
                     display_qr=True,
-                    reuse_connections=vaccination_agent.reuse_connections,
-                    multi_use_invitations=vaccination_agent.multi_use_invitations,
-                    public_did_connections=vaccination_agent.public_did_connections,
+                    reuse_connections=immunization_agent.reuse_connections,
+                    multi_use_invitations=immunization_agent.multi_use_invitations,
+                    public_did_connections=immunization_agent.public_did_connections,
                     wait=True,
                 )
 
-        if vaccination_agent.show_timing:
-            timing = await vaccination_agent.agent.fetch_timing()
+        if immunization_agent.show_timing:
+            timing = await immunization_agent.agent.fetch_timing()
             if timing:
-                for line in vaccination_agent.agent.format_timing(timing):
+                for line in immunization_agent.agent.format_timing(timing):
                     log_msg(line)
 
     finally:
-        terminated = await vaccination_agent.terminate()
+        terminated = await immunization_agent.terminate()
 
     await asyncio.sleep(0.1)
 
@@ -344,7 +344,7 @@ async def main(args):
 
 
 if __name__ == "__main__":
-    parser = arg_parser(ident="vaccination", port=8040)
+    parser = arg_parser(ident="immunization", port=8040)
     args = parser.parse_args()
 
     ENABLE_PYDEVD_PYCHARM = os.getenv("ENABLE_PYDEVD_PYCHARM", "").lower()

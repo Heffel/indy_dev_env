@@ -29,7 +29,7 @@ logging.basicConfig(level=logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 
 
-class AliceAgent(AriesAgent):
+class BobAgent(AriesAgent):
     def __init__(
             self,
             ident: str,
@@ -47,7 +47,7 @@ class AliceAgent(AriesAgent):
             ident,
             http_port,
             admin_port,
-            prefix="Alice",
+            prefix="Bob",
             no_auto=no_auto,
             seed=None,
             aip=aip,
@@ -116,9 +116,9 @@ async def main(args):
     if DEMO_EXTRA_AGENT_ARGS:
         extra_args = json.loads(DEMO_EXTRA_AGENT_ARGS)
         print("Got extra args:", extra_args)
-    alice_agent = await create_agent_with_args(
+    bob_agent = await create_agent_with_args(
         args,
-        ident="alice",
+        ident="bob",
         extra_args=extra_args,
     )
 
@@ -126,34 +126,34 @@ async def main(args):
         log_status(
             "#7 Provision an agent and wallet, get back configuration details"
             + (
-                f" (Wallet type: {alice_agent.wallet_type})"
-                if alice_agent.wallet_type
+                f" (Wallet type: {bob_agent.wallet_type})"
+                if bob_agent.wallet_type
                 else ""
             )
         )
-        agent = AliceAgent(
-            "alice.agent",
-            alice_agent.start_port,
-            alice_agent.start_port + 1,
-            genesis_data=alice_agent.genesis_txns,
-            genesis_txn_list=alice_agent.genesis_txn_list,
-            no_auto=alice_agent.no_auto,
-            tails_server_base_url=alice_agent.tails_server_base_url,
-            revocation=alice_agent.revocation,
-            timing=alice_agent.show_timing,
-            multitenant=alice_agent.multitenant,
-            mediation=alice_agent.mediation,
-            wallet_type=alice_agent.wallet_type,
-            aip=alice_agent.aip,
-            endorser_role=alice_agent.endorser_role,
-            log_file=alice_agent.log_file,
-            log_config=alice_agent.log_config,
-            log_level=alice_agent.log_level,
-            reuse_connections=alice_agent.reuse_connections,
+        agent = BobAgent(
+            "bob.agent",
+            bob_agent.start_port,
+            bob_agent.start_port + 1,
+            genesis_data=bob_agent.genesis_txns,
+            genesis_txn_list=bob_agent.genesis_txn_list,
+            no_auto=bob_agent.no_auto,
+            tails_server_base_url=bob_agent.tails_server_base_url,
+            revocation=bob_agent.revocation,
+            timing=bob_agent.show_timing,
+            multitenant=bob_agent.multitenant,
+            mediation=bob_agent.mediation,
+            wallet_type=bob_agent.wallet_type,
+            aip=bob_agent.aip,
+            endorser_role=bob_agent.endorser_role,
+            log_file=bob_agent.log_file,
+            log_config=bob_agent.log_config,
+            log_level=bob_agent.log_level,
+            reuse_connections=bob_agent.reuse_connections,
             extra_args=extra_args,
         )
 
-        await alice_agent.initialize(the_agent=agent)
+        await bob_agent.initialize(the_agent=agent)
 
         # FOR DISPLAYING ALL CREDENTIALS
         async def display_all_credentials(self):
@@ -161,15 +161,15 @@ async def main(args):
             log_msg(f"All credentials: {credentials}")
 
         log_status("#9 Input invitation details")
-        await input_invitation(alice_agent)
+        await input_invitation(bob_agent)
 
         options = "    (3) Send Message\n" "    (4) Input New Invitation\n" "    (5) Display All Credentials\n"
-        if alice_agent.endorser_role and alice_agent.endorser_role == "author":
+        if bob_agent.endorser_role and bob_agent.endorser_role == "author":
             options += "    (D) Set Endorser's DID\n"
-        if alice_agent.multitenant:
+        if bob_agent.multitenant:
             options += "    (W) Create and/or Enable Wallet\n"
         options += "    (X) Exit?\n[3/4/{}X] ".format(
-            "W/" if alice_agent.multitenant else "",
+            "W/" if bob_agent.multitenant else "",
         )
         async for option in prompt_loop(options):
             if option is not None:
@@ -180,55 +180,55 @@ async def main(args):
 
             # Display all credentials
             elif option in "5":
-                await display_all_credentials(alice_agent.agent)
+                await display_all_credentials(bob_agent.agent)
 
-            elif option in "dD" and alice_agent.endorser_role:
+            elif option in "dD" and bob_agent.endorser_role:
                 endorser_did = await prompt("Enter Endorser's DID: ")
-                await alice_agent.agent.admin_POST(
-                    f"/transactions/{alice_agent.agent.connection_id}/set-endorser-info",
+                await bob_agent.agent.admin_POST(
+                    f"/transactions/{bob_agent.agent.connection_id}/set-endorser-info",
                     params={"endorser_did": endorser_did, "endorser_name": "endorser"},
                 )
 
-            elif option in "wW" and alice_agent.multitenant:
+            elif option in "wW" and bob_agent.multitenant:
                 target_wallet_name = await prompt("Enter wallet name: ")
                 include_subwallet_webhook = await prompt(
                     "(Y/N) Create sub-wallet webhook target: "
                 )
                 if include_subwallet_webhook.lower() == "y":
-                    await alice_agent.agent.register_or_switch_wallet(
+                    await bob_agent.agent.register_or_switch_wallet(
                         target_wallet_name,
-                        webhook_port=alice_agent.agent.get_new_webhook_port(),
-                        mediator_agent=alice_agent.mediator_agent,
-                        taa_accept=alice_agent.taa_accept,
+                        webhook_port=bob_agent.agent.get_new_webhook_port(),
+                        mediator_agent=bob_agent.mediator_agent,
+                        taa_accept=bob_agent.taa_accept,
                     )
                 else:
-                    await alice_agent.agent.register_or_switch_wallet(
+                    await bob_agent.agent.register_or_switch_wallet(
                         target_wallet_name,
-                        mediator_agent=alice_agent.mediator_agent,
-                        taa_accept=alice_agent.taa_accept,
+                        mediator_agent=bob_agent.mediator_agent,
+                        taa_accept=bob_agent.taa_accept,
                     )
 
             elif option == "3":
                 msg = await prompt("Enter message: ")
                 if msg:
-                    await alice_agent.agent.admin_POST(
-                        f"/connections/{alice_agent.agent.connection_id}/send-message",
+                    await bob_agent.agent.admin_POST(
+                        f"/connections/{bob_agent.agent.connection_id}/send-message",
                         {"content": msg},
                     )
 
             elif option == "4":
                 # handle new invitation
                 log_status("Input new invitation details")
-                await input_invitation(alice_agent)
+                await input_invitation(bob_agent)
 
-        if alice_agent.show_timing:
-            timing = await alice_agent.agent.fetch_timing()
+        if bob_agent.show_timing:
+            timing = await bob_agent.agent.fetch_timing()
             if timing:
-                for line in alice_agent.agent.format_timing(timing):
+                for line in bob_agent.agent.format_timing(timing):
                     log_msg(line)
 
     finally:
-        terminated = await alice_agent.terminate()
+        terminated = await bob_agent.terminate()
 
     await asyncio.sleep(0.1)
 
@@ -237,7 +237,7 @@ async def main(args):
 
 
 if __name__ == "__main__":
-    parser = arg_parser(ident="alice", port=8030)
+    parser = arg_parser(ident="bob", port=8030)
     args = parser.parse_args()
 
     ENABLE_PYDEVD_PYCHARM = os.getenv("ENABLE_PYDEVD_PYCHARM", "").lower()
@@ -255,7 +255,7 @@ if __name__ == "__main__":
             import pydevd_pycharm
 
             print(
-                "Alice remote debugging to "
+                "Bob remote debugging to "
                 f"{PYDEVD_PYCHARM_HOST}:{PYDEVD_PYCHARM_CONTROLLER_PORT}"
             )
             pydevd_pycharm.settrace(
