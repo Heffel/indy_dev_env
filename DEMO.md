@@ -100,17 +100,16 @@ LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice_pa
 #9 Input invitation details 
 Invite details:            
 ```   
-09 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+08 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
 ```bash   
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_patient --port 8050 
 ```   
 
-10 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+09 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
 ```bash   
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
 ```   
-
-09 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
+10 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
 ```bash   
 #3/4 Create a new schema/cred def on the ledger
 Schema:
@@ -153,7 +152,7 @@ Schema ID: 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
 Cred def ID: 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
 ```   
 
-10 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que diferentemente de Alice Patient, Health Institute gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
+11 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que diferentemente de Alice Patient, Health Institute gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
 
 - Message wrapper 
 - Metadata 
@@ -162,7 +161,7 @@ O campo Transaction conterá o atributo "Alias: healthInstitute.agent"
 
 Expanda o campo "raw data" para verificar a estrutura do esquema. 
 
-11 - De volta ao terminal, verifique que o agente Health Institute está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
+12 - De volta ao terminal, verifique que o agente Health Institute está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
 * ### Não copie os dados aqui apresentados para conexões, utilize os gerados no terminal da própria máquina.
 
 ```bash   
@@ -170,14 +169,14 @@ Invitation Data:
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
 ```   
 
-12 - Utilize apenas a parte depois de Data: 
+13 - Utilize apenas a parte depois de Data: 
 ```bash   
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
 ``` 
 
 Cole no terminal do agente Alice Patient, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
 
-13 -  O menu do agente Alice deve se parecer com: 
+14 -  O menu do agente Alice deve se parecer com: 
 ```bash   
 Alice      | Connected 
 Alice      | Check for endorser role ... 
@@ -189,24 +188,23 @@ Connect duration: 0.35s
 
 [3/4/X]                          
 ```   
-##PAREI AQUI
-14 - O menu do agente Faber deve se parecer com: 
-```bash   
-Faber      | Connected 
-Faber      | Check for endorser role ... 
-    (1) Issue Credential 
-    (1a) Set Credential Type (indy) 
-    (2) Send Proof Request 
-    (2a) Send *Connectionless* Proof Request (requires a Mobile client) 
-    (3) Send Message 
-    (4) Create New Invitation 
-    (T) Toggle tracing on credential/proof exchange 
-    (X) Exit?                                                                                                                                                                                                                                  
 
-[1/2/3/4/T/X]        
+15 - O menu do agente Health Institute deve se parecer com: 
+```bash   
+HealthInstitute | Check for endorser role ...
+    (1g) Issue Good Credential
+    (1b) Issue Bad Credential
+    (1a) Set Credential Type (indy)
+    (2) Send Proof Request
+    (2a) Send *Connectionless* Proof Request (requires a Mobile client)
+    (3) Send Message
+    (4) Create New Invitation
+    (T) Toggle tracing on credential/proof exchange
+    (X) Exit?                                                                                                                                                                                                     
+[1/2/3/4/T/X]                              
 ```   
 
-15 - Para testar a comunicação entre agentes, podemos enviar mensagens de alice para Faber ou vice e versa. No exemplo mandaremos um "Hellow from Alice" de Alice para Faber, escolhendo a opção 3 em Alice, informando a mensagem e verificando a chegada dela em Faber. 
+16 - Para testar a comunicação entre agentes, podemos enviar mensagens de alice para Faber ou vice e versa. No exemplo mandaremos um "Hello from Alice" de Alice para Health Institute, escolhendo a opção 3 em Alice, informando a mensagem e verificando a chegada dela em Health Institute. 
 ```bash  
 Alice      | Connected 
 Alice      | Check for endorser role ... 
@@ -216,76 +214,143 @@ Connect duration: 0.27s
     (5) Display All Credentials
     (X) Exit?                                                                                                                                                                                                                                  
 [3/4/X] 3                                                                                                                                                                                                                                      
-Enter message: Hellow from Alice                                                                                                                                                                                                               
-Alice      | Received message: faber.agent received your message 
+Enter message: Hello from Alice                                                                                                                                                                                                               
+Alice      | Received message: health institue.agent received your message 
 ```   
 
-em Faber observa-se: 
+em Health Institute observa-se: 
 
 ```bash  
-Faber      | Connected 
-Faber      | Check for endorser role ... 
-Faber      | Received message: Hellow from Alice 
+HealthInstitute      | Connected 
+HealthInstitute      | Check for endorser role ... 
+HealthInstitute      | Received message: Hello from Alice 
 
-    (1) Issue Credential 
-    (1a) Set Credential Type (indy) 
-    (2) Send Proof Request 
-    (2a) Send *Connectionless* Proof Request (requires a Mobile client) 
-    (3) Send Message 
-    (4) Create New Invitation 
-    (T) Toggle tracing on credential/proof exchange 
-    (X) Exit?                                                                                                                                                                                                                                  
+    (1g) Issue Good Credential
+    (1b) Issue Bad Credential
+    (1a) Set Credential Type (indy)
+    (2) Send Proof Request
+    (2a) Send *Connectionless* Proof Request (requires a Mobile client)
+    (3) Send Message
+    (4) Create New Invitation
+    (T) Toggle tracing on credential/proof exchange
+    (X) Exit?                                                                                                                                                                                                                                                 
 
 [1/2/3/4/T/X]                                      
 ```   
 
-16 - Em Faber emitiremos uma credencial para Alice, que conterá prova de que Alice possui uma graduação em Faber. No agente Faber escolha a opção 1. Observe em Faber: 
+17 - Em Health Institute emitiremos uma credencial para Alice, que conterá prova de que Alice é maior de idade e possui uma condição especial. No agente Faber escolha a opção 1g. Observe em Health Institute: 
 ```bash  
-#13 Issue credential offer to X 
-Faber      | Credential: state = offer-sent, cred_ex_id = 868b3e3d-e2d4-4164-99d1-f7827f23c095 
-Faber      | Credential: state = request-received, cred_ex_id = 868b3e3d-e2d4-4164-99d1-f7827f23c095 
-#17 Issue credential to X 
-Faber      | Credential: state = credential-issued, cred_ex_id = 868b3e3d-e2d4-4164-99d1-f7827f23c095 
-Faber      | Credential: state = done, cred_ex_id = 868b3e3d-e2d4-4164-99d1-f7827f23c095 
+#13 Issue good credential offer to X
+HealthInstitute | Credential: state = offer-sent, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
+HealthInstitute | Credential: state = request-received, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
+
+#17 Issue credential to X
+HealthInstitute | Credential: state = credential-issued, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
+HealthInstitute | Credential: state = done, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
+
 ```   
 
-17 - Em Alice, observe que o agente foi informado do recebimento de uma credencial: 
+18 - Em Alice, observe que o agente foi informado do recebimento de uma credencial: 
 ```bash  
-Alice      | Credential: state = offer-received, cred_ex_id = 4ec19496-c196-4ce7-abf3-e047901445bb 
-#15 After receiving credential offer, send credential request 
-Alice      | No 'by_format' in message: {'connection_id': 'de667020-f894-44bd-a25b-bb27aff9f6bb', 'role': 'holder', 'initiator': 'external', 'auto_offer': False, 'auto_issue': False, 'auto_remove': False, 'thread_id': '27b8f515-9287-4a87-b79a-5eca6b07f5f9', 'state': 'offer-received', 'trace': False, 'created_at': '2024-10-30T06:36:18.851434Z', 'updated_at': '2024-10-30T06:36:18.851434Z', 'cred_ex_id': '4ec19496-c196-4ce7-abf3-e047901445bb'} 
-Alice      | Credential: state = request-sent, cred_ex_id = 4ec19496-c196-4ce7-abf3-e047901445bb 
-Alice      | Credential: state = credential-received, cred_ex_id = 4ec19496-c196-4ce7-abf3-e047901445bb 
-#18.1 Stored credential a75f3d8f-b97e-4e35-9621-ecbb4f4cf3cb in wallet 
-Alice      | Credential: state = done, cred_ex_id = 4ec19496-c196-4ce7-abf3-e047901445bb 
-Credential details: 
-  { 
-    "referent": "a75f3d8f-b97e-4e35-9621-ecbb4f4cf3cb", 
-    "schema_id": "HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62", 
-    "cred_def_id": "HhcefS5SXBKbdqRRMr9wXd:3:CL:8:faber.agent.degree_schema", 
-    "rev_reg_id": null, 
-    "cred_rev_id": null, 
-    "attrs": { 
-      "degree": "Maths", 
-      "date": "2018-05-28", 
-      "name": "Alice Smith", 
-      "birthdate_dateint": "20001030", 
-      "timestamp": "1730270178" 
-    } 
-  } 
-Alice      | credential_id a75f3d8f-b97e-4e35-9621-ecbb4f4cf3cb 
-Alice      | cred_def_id HhcefS5SXBKbdqRRMr9wXd:3:CL:8:faber.agent.degree_schema 
-Alice      | schema_id HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62 
+#15 After receiving credential offer, send credential request
+Alice      | No 'by_format' in message: {'connection_id': 'f727d1eb-dc4f-46c3-aac2-e1ec4e0e4d80', 'role': 'holder', 'initiator': 'external', 'auto_offer': False, 'auto_issue': False, 'auto_remove': False, 'thread_id': '53c2a14b-a8ef-4e77-9741-7d3105cc436a', 'state': 'offer-received', 'trace': False, 'created_at': '2024-11-08T15:13:38.449673Z', 'updated_at': '2024-11-08T15:13:38.449673Z', 'cred_ex_id': 'a216a6ee-49de-4197-be9a-39f48b28d0c0'}
+Alice      | Credential: state = request-sent, cred_ex_id = a216a6ee-49de-4197-be9a-39f48b28d0c0
+Alice      | Credential: state = credential-received, cred_ex_id = a216a6ee-49de-4197-be9a-39f48b28d0c0
+
+#18.1 Stored credential 2cb8fa7d-fcd9-4c79-a398-cfe080ac696e in wallet
+Alice      | Credential: state = done, cred_ex_id = a216a6ee-49de-4197-be9a-39f48b28d0c0
+Credential details:
+  {
+    "referent": "2cb8fa7d-fcd9-4c79-a398-cfe080ac696e",
+    "schema_id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+    "cred_def_id": "6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema",
+    "rev_reg_id": null,
+    "cred_rev_id": null,
+    "attrs": {
+      "birthdate_dateint": "20001108",
+      "date": "2018-05-28",
+      "timestamp": "1731078818",
+      "condition": "1",
+      "name": "Alice Smith"
+    }
+  }
+  
+Alice      | credential_id 2cb8fa7d-fcd9-4c79-a398-cfe080ac696e
+Alice      | cred_def_id 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
+Alice      | schema_id 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
 ```   
 
-18 - Verifique no agente Alice o recibemento da nova credencial. Agora a opção 5 listará uma credencial que deve parecer como a seguinte:
+19 - Verifique no agente Alice o recibemento da nova credencial. Agora a opção 5 listará uma credencial que deve parecer como a seguinte:
 ```bash
-All credentials: {'results': [{'referent': '743bd53a-6a4e-4220-8372-9a86a455359b', 'schema_id': 'Aj3WVTqSoLpEwEHJnENwqv:2:degree schema:62.15.36', 'cred_def_id': 'Aj3WVTqSoLpEwEHJnENwqv:3:CL:99:faber.agent.degree_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1730755630', 'name': 'Alice Smith', 'birthdate_dateint': '20001104', 'date': '2018-05-28', 'degree': 'Maths'}}]}
-``` 
+All credentials: {'results': [{'referent': '2cb8fa7d-fcd9-4c79-a398-cfe080ac696e', 'schema_id': '6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27', 'cred_def_id': '6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'date': '2018-05-28', 'birthdate_dateint': '20001108', 'name': 'Alice Smith', 'timestamp': '1731078818', 'condition': '1'}}]}
 
-19 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente ACME. Para subir o agente ACME repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente ACME através do comando: 
+```
+20 - Em Alice escolha a opção 4 para preparar o agente para futura conexão com o agente Immunization Office
+
+21 - No agente Health Institute escolha a opção 4, usaremos este novo convite para nos conectarmos a Bob
+
+22 - Repita os passos de conexão 13 e 14 para o agente Bob
+
+22 - Novamente o menu do agente Health Institute deve se parecer com: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m acme --port 8040 
+HealthInstitute | Check for endorser role ...
+    (1g) Issue Good Credential
+    (1b) Issue Bad Credential
+    (1a) Set Credential Type (indy)
+    (2) Send Proof Request
+    (2a) Send *Connectionless* Proof Request (requires a Mobile client)
+    (3) Send Message
+    (4) Create New Invitation
+    (T) Toggle tracing on credential/proof exchange
+    (X) Exit?                                                                                                                                                                                                     
+[1/2/3/4/T/X]                              
+```   
+23 - Em Health Institute emitiremos uma credencial para Bob, que conterá prova de que Bob é menor de idade e não possui uma condição especial. No agente Faber escolha a opção 1b. Observe em Health Institute: 
+```bash  
+#13 Issue bad credential offer to X
+HealthInstitute | Credential: state = offer-sent, cred_ex_id = 23da3f78-ad5a-42ca-b89d-8c813c934839
+HealthInstitute | Credential: state = request-received, cred_ex_id = 23da3f78-ad5a-42ca-b89d-8c813c934839
+
+#17 Issue credential to X
+HealthInstitute | Credential: state = credential-issued, cred_ex_id = 23da3f78-ad5a-42ca-b89d-8c813c934839
+HealthInstitute | Credential: state = done, cred_ex_id = 23da3f78-ad5a-42ca-b89d-8c813c934839
+
+```   
+
+24 - Em Bob, observe que o agente foi informado do recebimento de uma credencial: 
+```bash  
+#15 After receiving credential offer, send credential request
+Bob      | No 'by_format' in message: {'connection_id': 'f727d1eb-dc4f-46c3-aac2-e1ec4e0e4d80', 'role': 'holder', 'initiator': 'external', 'auto_offer': False, 'auto_issue': False, 'auto_remove': False, 'thread_id': 'ec4f3c83-e6c8-4a8d-9da8-fdebc39c9480', 'state': 'offer-received', 'trace': False, 'created_at': '2024-11-08T15:22:43.217552Z', 'updated_at': '2024-11-08T15:22:43.217552Z', 'cred_ex_id': 'd3ea0881-43bb-4727-a881-5b5851a633a6'}
+Bob      | Credential: state = request-sent, cred_ex_id = d3ea0881-43bb-4727-a881-5b5851a633a6
+Bob      | Credential: state = credential-received, cred_ex_id = d3ea0881-43bb-4727-a881-5b5851a633a6
+
+#18.1 Stored credential f7d3ec56-8b47-4154-9501-3659ebf76e47 in wallet
+Credential details:
+  {
+    "referent": "f7d3ec56-8b47-4154-9501-3659ebf76e47",
+    "schema_id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+    "cred_def_id": "6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema",
+    "rev_reg_id": null,
+    "cred_rev_id": null,
+    "attrs": {
+      "name": "Bob Smith",
+      "birthdate_dateint": "20141108",
+      "date": "2018-05-28",
+      "condition": "0",
+      "timestamp": "1731079363"
+    }
+  }
+  
+Bob      | credential_id f7d3ec56-8b47-4154-9501-3659ebf76e47
+Bob      | cred_def_id 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
+Bob      | schema_id 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
+Bob      | Credential: state = done, cred_ex_id = d3ea0881-43bb-4727-a881-5b5851a633a6
+
+```   
+#PAREI AQUI
+19 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente Immunization Center. Para subir o agente Immunization Center repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Immunization Center através do comando: 
+```bash   
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m immuCent --port 8040 
 ```   
 
 20 - Observe que no processo de inicialização, o agente ACME exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
