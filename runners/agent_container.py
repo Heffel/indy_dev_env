@@ -427,8 +427,11 @@ class AriesAgent(DemoAgent):
             self.log("Problem report message:", message.get("error_msg"))
 
     async def handle_present_proof_v2_0(self, message):
+        log_msg("Message received at handle_present_proof_v2_0: message = ", message)
         state = message.get("state")
+        log_msg("Message presentation: state = ", state)
         pres_ex_id = message["pres_ex_id"]
+        log_msg("Message presentation: pres_ex_id = ", pres_ex_id)
         self.log(f"Presentation: state = {state}, pres_ex_id = {pres_ex_id}")
 
         print(f"Presentation: state = {state}, pres_ex_id = {pres_ex_id}")

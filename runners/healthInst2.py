@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.WARNING)
 LOGGER = logging.getLogger(__name__)
 
 
-class FaberAgent(AriesAgent):
+class HealthInstituteAgent(AriesAgent):
     def __init__(
         self,
         ident: str,
@@ -53,7 +53,7 @@ class FaberAgent(AriesAgent):
             ident,
             http_port,
             admin_port,
-            prefix="Faber",
+            prefix="HealthInstitute",
             no_auto=no_auto,
             endorser_role=endorser_role,
             revocation=revocation,
@@ -78,8 +78,8 @@ class FaberAgent(AriesAgent):
     def connection_ready(self):
         return self._connection_ready.done() and self._connection_ready.result()
 
-    def generate_credential_offer(self, aip, cred_type, cred_def_id, exchange_tracing):
-        age = 12
+    def generate_good_credential_offer(self, aip, cred_type, cred_def_id, exchange_tracing):
+        age = 24
         d = datetime.date.today()
         birth_date = datetime.date(d.year - age, d.month, d.day)
         birth_date_format = "%Y%m%d"
@@ -88,7 +88,7 @@ class FaberAgent(AriesAgent):
             self.cred_attrs[cred_def_id] = {
                 "name": "Alice Smith",
                 "date": "2018-05-28",
-                "degree": "kindergartner",
+                "condition": 1,
                 "birthdate_dateint": birth_date.strftime(birth_date_format),
                 "timestamp": str(int(time.time())),
             }
@@ -96,7 +96,7 @@ class FaberAgent(AriesAgent):
             cred_preview = {
                 "@type": CRED_PREVIEW_TYPE,
                 "attributes": [
-                    {"name": n, "value": v}
+                    {"name": n, "value": str(v)}
                     for (n, v) in self.cred_attrs[cred_def_id].items()
                 ],
             }
@@ -111,20 +111,22 @@ class FaberAgent(AriesAgent):
             return offer_request
 
         elif aip == 20:
+            # define attributes to send for credential
+            # condition 0 is Negative
+            # condition 1 is Positive
             if cred_type == CRED_FORMAT_INDY:
                 self.cred_attrs[cred_def_id] = {
                     "name": "Alice Smith",
                     "date": "2018-05-28",
-                    "degree": "kindergartner",
+                    "condition": 1,
                     "birthdate_dateint": birth_date.strftime(birth_date_format),
                     "timestamp": str(int(time.time())),
                 }
-                log_msg(f"Generated credential attributes: {self.cred_attrs[cred_def_id]}")
 
                 cred_preview = {
                     "@type": CRED_PREVIEW_TYPE,
                     "attributes": [
-                        {"name": n, "value": v}
+                        {"name": n, "value": str(v)}
                         for (n, v) in self.cred_attrs[cred_def_id].items()
                     ],
                 }
@@ -142,7 +144,7 @@ class FaberAgent(AriesAgent):
                 self.cred_attrs[cred_def_id] = {
                     "name": "Alice Smith",
                     "date": "2018-05-28",
-                    "degree": "kindergartner",
+                    "condition": 1,
                     "birthdate_dateint": birth_date.strftime(birth_date_format),
                     "timestamp": str(int(time.time())),
                 }
@@ -150,7 +152,7 @@ class FaberAgent(AriesAgent):
                 cred_preview = {
                     "@type": CRED_PREVIEW_TYPE,
                     "attributes": [
-                        {"name": n, "value": v}
+                        {"name": n, "value": str(v)}
                         for (n, v) in self.cred_attrs[cred_def_id].items()
                     ],
                 }
@@ -203,8 +205,135 @@ class FaberAgent(AriesAgent):
         else:
             raise Exception(f"Error invalid AIP level: {self.aip}")
 
+    def generate_bad_credential_offer(self, aip, cred_type, cred_def_id, exchange_tracing):
+        age = 10
+        d = datetime.date.today()
+        birth_date = datetime.date(d.year - age, d.month, d.day)
+        birth_date_format = "%Y%m%d"
+        if aip == 10:
+            # define attributes to send for credential
+            # condition 0 is Negative
+            # condition 1 is Positive
+            self.cred_attrs[cred_def_id] = {
+                "name": "Bob Smith",
+                "date": "2018-05-28",
+                "condition": 0,
+                "birthdate_dateint": birth_date.strftime(birth_date_format),
+                "timestamp": str(int(time.time())),
+            }
+
+            cred_preview = {
+                "@type": CRED_PREVIEW_TYPE,
+                "attributes": [
+                    {"name": n, "value": str(v)}
+                    for (n, v) in self.cred_attrs[cred_def_id].items()
+                ],
+            }
+            offer_request = {
+                "connection_id": self.connection_id,
+                "cred_def_id": cred_def_id,
+                "comment": f"Offer on cred def id {cred_def_id}",
+                "auto_remove": False,
+                "credential_preview": cred_preview,
+                "trace": exchange_tracing,
+            }
+            return offer_request
+
+        elif aip == 20:
+            # define attributes to send for credential
+            if cred_type == CRED_FORMAT_INDY:
+                self.cred_attrs[cred_def_id] = {
+                    "name": "Bob Smith",
+                    "date": "2018-05-28",
+                    "condition": 0,
+                    "birthdate_dateint": birth_date.strftime(birth_date_format),
+                    "timestamp": str(int(time.time())),
+                }
+
+                cred_preview = {
+                    "@type": CRED_PREVIEW_TYPE,
+                    "attributes": [
+                        {"name": n, "value": str(v)}
+                        for (n, v) in self.cred_attrs[cred_def_id].items()
+                    ],
+                }
+                offer_request = {
+                    "connection_id": self.connection_id,
+                    "comment": f"Offer on cred def id {cred_def_id}",
+                    "auto_remove": False,
+                    "credential_preview": cred_preview,
+                    "filter": {"indy": {"cred_def_id": cred_def_id}},
+                    "trace": exchange_tracing,
+                }
+                return offer_request
+
+            elif cred_type == CRED_FORMAT_VC_DI:
+                self.cred_attrs[cred_def_id] = {
+                    "name": "Bob Smith",
+                    "date": "2018-05-28",
+                    "condition": 0,
+                    "birthdate_dateint": birth_date.strftime(birth_date_format),
+                    "timestamp": str(int(time.time())),
+                }
+
+                cred_preview = {
+                    "@type": CRED_PREVIEW_TYPE,
+                    "attributes": [
+                        {"name": n, "value": str(v)}
+                        for (n, v) in self.cred_attrs[cred_def_id].items()
+                    ],
+                }
+                offer_request = {
+                    "connection_id": self.connection_id,
+                    "comment": f"Offer on cred def id {cred_def_id}",
+                    "auto_remove": False,
+                    "credential_preview": cred_preview,
+                    "filter": {"vc_di": {"cred_def_id": cred_def_id}},
+                    "trace": exchange_tracing,
+                }
+                return offer_request
+
+            elif cred_type == CRED_FORMAT_JSON_LD:
+                offer_request = {
+                    "connection_id": self.connection_id,
+                    "filter": {
+                        "ld_proof": {
+                            "credential": {
+                                "@context": [
+                                    "https://www.w3.org/2018/credentials/v1",
+                                    "https://w3id.org/citizenship/v1",
+                                    "https://w3id.org/security/bbs/v1",
+                                ],
+                                "type": [
+                                    "VerifiableCredential",
+                                    "PermanentResident",
+                                ],
+                                "id": "https://credential.example.com/residents/1234567890",
+                                "issuer": self.did,
+                                "issuanceDate": "2020-01-01T12:00:00Z",
+                                "credentialSubject": {
+                                    "type": ["PermanentResident"],
+                                    "givenName": "BOB",
+                                    "familyName": "SMITH",
+                                    "gender": "Male",
+                                    "birthCountry": "Bahamas",
+                                    "birthDate": "1958-07-17",
+                                },
+                            },
+                            "options": {"proofType": SIG_TYPE_BLS},
+                        }
+                    },
+                }
+                return offer_request
+
+            else:
+                raise Exception(f"Error invalid credential type: {self.cred_type}")
+
+        else:
+            raise Exception(f"Error invalid AIP level: {self.aip}")
+
     def generate_proof_request_web_request(
-            self, aip, cred_type, revocation, exchange_tracing, connectionless=False
+        self, aip, cred_type, revocation, exchange_tracing, connectionless=False
     ):
         age = 18
         d = datetime.date.today()
@@ -214,26 +343,26 @@ class FaberAgent(AriesAgent):
             req_attrs = [
                 {
                     "name": "name",
-                    "restrictions": [{"schema_name": "degree schema"}],
+                    "restrictions": [{"schema_name": "health schema"}],
                 },
                 {
                     "name": "date",
-                    "restrictions": [{"schema_name": "degree schema"}],
+                    "restrictions": [{"schema_name": "health schema"}],
                 },
             ]
             if revocation:
                 req_attrs.append(
                     {
-                        "name": "degree",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "name": "health",
+                        "restrictions": [{"schema_name": "health schema"}],
                         "non_revoked": {"to": int(time.time() - 1)},
                     },
                 )
             else:
                 req_attrs.append(
                     {
-                        "name": "degree",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "name": "health",
+                        "restrictions": [{"schema_name": "health schema"}],
                     }
                 )
             if SELF_ATTESTED:
@@ -247,11 +376,11 @@ class FaberAgent(AriesAgent):
                     "name": "birthdate_dateint",
                     "p_type": "<=",
                     "p_value": int(birth_date.strftime(birth_date_format)),
-                    "restrictions": [{"schema_name": "degree schema"}],
+                    "restrictions": [{"schema_name": "health schema"}],
                 }
             ]
             indy_proof_request = {
-                "name": "Proof of Education",
+                "name": "Proof of Health",
                 "version": "1.0",
                 "requested_attributes": {
                     f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
@@ -270,7 +399,6 @@ class FaberAgent(AriesAgent):
             }
             if not connectionless:
                 proof_request_web_request["connection_id"] = self.connection_id
-            log_msg(f"Generated proof request web request: {proof_request_web_request}")
             return proof_request_web_request
 
         elif aip == 20:
@@ -278,26 +406,26 @@ class FaberAgent(AriesAgent):
                 req_attrs = [
                     {
                         "name": "name",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "restrictions": [{"schema_name": "health schema"}],
                     },
                     {
                         "name": "date",
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "restrictions": [{"schema_name": "health schema"}],
                     },
                 ]
                 if revocation:
                     req_attrs.append(
                         {
-                            "name": "degree",
-                            "restrictions": [{"schema_name": "degree schema"}],
+                            "name": "health",
+                            "restrictions": [{"schema_name": "health schema"}],
                             "non_revoked": {"to": int(time.time() - 1)},
                         },
                     )
                 else:
                     req_attrs.append(
                         {
-                            "name": "degree",
-                            "restrictions": [{"schema_name": "degree schema"}],
+                            "name": "condition",
+                            "restrictions": [{"schema_name": "health schema"}],
                         }
                     )
                 if SELF_ATTESTED:
@@ -311,11 +439,18 @@ class FaberAgent(AriesAgent):
                         "name": "birthdate_dateint",
                         "p_type": "<=",
                         "p_value": int(birth_date.strftime(birth_date_format)),
-                        "restrictions": [{"schema_name": "degree schema"}],
+                        "restrictions": [{"schema_name": "health schema"}],
+                    },
+                    {
+                        "name": "condition",
+                        "p_type": ">=",
+                        "p_value": 1,
+                        "restrictions": [{"schema_name": "health schema"}],
                     }
+
                 ]
                 indy_proof_request = {
-                    "name": "Proof of Education",
+                    "name": "Proof of Health",
                     "version": "1.0",
                     "requested_attributes": {
                         f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
@@ -330,12 +465,17 @@ class FaberAgent(AriesAgent):
                     indy_proof_request["non_revoked"] = {"to": int(time.time())}
 
                 proof_request_web_request = {
-                    "presentation_request": {"indy": indy_proof_request},
-                    "trace": exchange_tracing,
+                    "connection_id": self.connection_id,
+                    "presentation_request": {
+                        "indy": indy_proof_request
+                    },
+                    "by_format": {
+                        "indy": indy_proof_request
+                    }
                 }
                 if not connectionless:
                     proof_request_web_request["connection_id"] = self.connection_id
-                log_msg(f"Generated proof request web request: {proof_request_web_request}")
+                    log_msg(f"Generated proof request web request: {proof_request_web_request}")
                 return proof_request_web_request
 
             elif cred_type == CRED_FORMAT_VC_DI:
@@ -375,7 +515,7 @@ class FaberAgent(AriesAgent):
                                                     },
                                                 },
                                                 {"path": ["$.credentialSubject.name"]},
-                                                {"path": ["$.credentialSubject.degree"]},
+                                                {"path": ["$.credentialSubject.condition"]},
                                                 {
                                                     "path": [
                                                         "$.credentialSubject.birthdate_dateint"
@@ -416,7 +556,6 @@ class FaberAgent(AriesAgent):
                     ] = "required"
                 if not connectionless:
                     proof_request_web_request["connection_id"] = self.connection_id
-                log_msg(f"Generated proof request web request: {proof_request_web_request}")
                 return proof_request_web_request
 
             elif cred_type == CRED_FORMAT_JSON_LD:
@@ -478,7 +617,6 @@ class FaberAgent(AriesAgent):
                 }
                 if not connectionless:
                     proof_request_web_request["connection_id"] = self.connection_id
-                log_msg(f"Generated proof request web request: {proof_request_web_request}")
                 return proof_request_web_request
 
             else:
@@ -493,9 +631,9 @@ async def main(args):
     if DEMO_EXTRA_AGENT_ARGS:
         extra_args = json.loads(DEMO_EXTRA_AGENT_ARGS)
         print("Got extra args:", extra_args)
-    faber_agent = await create_agent_with_args(
+    healthInstitute_agent = await create_agent_with_args(
         args,
-        ident="faber",
+        ident="healthInstitute",
         extra_args=extra_args,
     )
 
@@ -503,77 +641,78 @@ async def main(args):
         log_status(
             "#1 Provision an agent and wallet, get back configuration details"
             + (
-                f" (Wallet type: {faber_agent.wallet_type})"
-                if faber_agent.wallet_type
+                f" (Wallet type: {healthInstitute_agent.wallet_type})"
+                if healthInstitute_agent.wallet_type
                 else ""
             )
         )
-        agent = FaberAgent(
-            "faber.agent",
-            faber_agent.start_port,
-            faber_agent.start_port + 1,
-            genesis_data=faber_agent.genesis_txns,
-            genesis_txn_list=faber_agent.genesis_txn_list,
-            no_auto=faber_agent.no_auto,
-            tails_server_base_url=faber_agent.tails_server_base_url,
-            revocation=faber_agent.revocation,
-            timing=faber_agent.show_timing,
-            multitenant=faber_agent.multitenant,
-            mediation=faber_agent.mediation,
-            wallet_type=faber_agent.wallet_type,
-            seed=faber_agent.seed,
-            aip=faber_agent.aip,
-            endorser_role=faber_agent.endorser_role,
-            anoncreds_legacy_revocation=faber_agent.anoncreds_legacy_revocation,
-            log_file=faber_agent.log_file,
-            log_config=faber_agent.log_config,
-            log_level=faber_agent.log_level,
-            reuse_connections=faber_agent.reuse_connections,
-            multi_use_invitations=faber_agent.multi_use_invitations,
-            public_did_connections=faber_agent.public_did_connections,
+        agent = HealthInstituteAgent(
+            "healthInstitute.agent",
+            healthInstitute_agent.start_port,
+            healthInstitute_agent.start_port + 1,
+            genesis_data=healthInstitute_agent.genesis_txns,
+            genesis_txn_list=healthInstitute_agent.genesis_txn_list,
+            no_auto=healthInstitute_agent.no_auto,
+            tails_server_base_url=healthInstitute_agent.tails_server_base_url,
+            revocation=healthInstitute_agent.revocation,
+            timing=healthInstitute_agent.show_timing,
+            multitenant=healthInstitute_agent.multitenant,
+            mediation=healthInstitute_agent.mediation,
+            wallet_type=healthInstitute_agent.wallet_type,
+            seed=healthInstitute_agent.seed,
+            aip=healthInstitute_agent.aip,
+            endorser_role=healthInstitute_agent.endorser_role,
+            anoncreds_legacy_revocation=healthInstitute_agent.anoncreds_legacy_revocation,
+            log_file=healthInstitute_agent.log_file,
+            log_config=healthInstitute_agent.log_config,
+            log_level=healthInstitute_agent.log_level,
+            reuse_connections=healthInstitute_agent.reuse_connections,
+            multi_use_invitations=healthInstitute_agent.multi_use_invitations,
+            public_did_connections=healthInstitute_agent.public_did_connections,
             extra_args=extra_args,
         )
 
-        faber_schema_name = "degree schema"
-        faber_schema_attrs = [
+        healthInstitute_schema_name = "health schema"
+        healthInstitute_schema_attrs = [
             "name",
             "date",
-            "degree",
+            "condition",
             "birthdate_dateint",
             "timestamp",
         ]
-        if faber_agent.cred_type in [CRED_FORMAT_INDY, CRED_FORMAT_VC_DI]:
-            faber_agent.public_did = True
-            await faber_agent.initialize(
+        if healthInstitute_agent.cred_type in [CRED_FORMAT_INDY, CRED_FORMAT_VC_DI]:
+            healthInstitute_agent.public_did = True
+            await healthInstitute_agent.initialize(
                 the_agent=agent,
-                schema_name=faber_schema_name,
-                schema_attrs=faber_schema_attrs,
+                schema_name=healthInstitute_schema_name,
+                schema_attrs=healthInstitute_schema_attrs,
                 create_endorser_agent=(
-                    (faber_agent.endorser_role == "author")
-                    if faber_agent.endorser_role
+                    (healthInstitute_agent.endorser_role == "author")
+                    if healthInstitute_agent.endorser_role
                     else False
                 ),
             )
-        elif faber_agent.cred_type in [
+        elif healthInstitute_agent.cred_type in [
             CRED_FORMAT_JSON_LD,
         ]:
-            faber_agent.public_did = True
-            await faber_agent.initialize(the_agent=agent)
+            healthInstitute_agent.public_did = True
+            await healthInstitute_agent.initialize(the_agent=agent)
         else:
-            raise Exception("Invalid credential type:" + faber_agent.cred_type)
+            raise Exception("Invalid credential type:" + healthInstitute_agent.cred_type)
 
         # generate an invitation for Alice
-        await faber_agent.generate_invitation(
+        await healthInstitute_agent.generate_invitation(
             display_qr=True,
-            reuse_connections=faber_agent.reuse_connections,
-            multi_use_invitations=faber_agent.multi_use_invitations,
-            public_did_connections=faber_agent.public_did_connections,
+            reuse_connections=healthInstitute_agent.reuse_connections,
+            multi_use_invitations=healthInstitute_agent.multi_use_invitations,
+            public_did_connections=healthInstitute_agent.public_did_connections,
             wait=True,
         )
 
         exchange_tracing = False
-        options = "    (1) Issue Credential\n"
-        if faber_agent.cred_type in [
+        options = "    (1g) Issue Good Credential\n"
+        options += "    (1b) Issue Bad Credential\n"
+        if healthInstitute_agent.cred_type in [
             CRED_FORMAT_INDY,
             CRED_FORMAT_VC_DI,
         ]:
@@ -584,27 +723,27 @@ async def main(args):
             "    (3) Send Message\n"
             "    (4) Create New Invitation\n"
         )
-        if faber_agent.revocation:
+        if healthInstitute_agent.revocation:
             options += (
                 "    (5) Revoke Credential\n"
                 "    (6) Publish Revocations\n"
                 "    (7) Rotate Revocation Registry\n"
                 "    (8) List Revocation Registries\n"
             )
-        if faber_agent.endorser_role and faber_agent.endorser_role == "author":
+        if healthInstitute_agent.endorser_role and healthInstitute_agent.endorser_role == "author":
             options += "    (D) Set Endorser's DID\n"
-        if faber_agent.multitenant:
+        if healthInstitute_agent.multitenant:
             options += "    (W) Create and/or Enable Wallet\n"
             options += "    (U) Upgrade wallet to anoncreds \n"
         options += "    (T) Toggle tracing on credential/proof exchange\n"
         options += "    (X) Exit?\n[1/2/3/4/{}{}T/X] ".format(
-            "5/6/7/8/" if faber_agent.revocation else "",
-            "W/" if faber_agent.multitenant else "",
+            "5/6/7/8/" if healthInstitute_agent.revocation else "",
+            "W/" if healthInstitute_agent.multitenant else "",
         )
 
         upgraded_to_anoncreds = False
         async for option in prompt_loop(
-            options.replace("%CRED_TYPE%", faber_agent.cred_type)
+            options.replace("%CRED_TYPE%", healthInstitute_agent.cred_type)
         ):
             if option is not None:
                 option = option.strip()
@@ -612,7 +751,7 @@ async def main(args):
             # Anoncreds has different endpoints for revocation
             is_anoncreds = False
             if (
-                faber_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
+                healthInstitute_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
                 or upgraded_to_anoncreds
             ):
                 is_anoncreds = True
@@ -620,43 +759,43 @@ async def main(args):
             if option is None or option in "xX":
                 break
 
-            elif option in "dD" and faber_agent.endorser_role:
+            elif option in "dD" and healthInstitute_agent.endorser_role:
                 endorser_did = await prompt("Enter Endorser's DID: ")
-                await faber_agent.agent.admin_POST(
-                    f"/transactions/{faber_agent.agent.connection_id}/set-endorser-info",
+                await healthInstitute_agent.agent.admin_POST(
+                    f"/transactions/{healthInstitute_agent.agent.connection_id}/set-endorser-info",
                     params={"endorser_did": endorser_did},
                 )
 
-            elif option in "wW" and faber_agent.multitenant:
+            elif option in "wW" and healthInstitute_agent.multitenant:
                 target_wallet_name = await prompt("Enter wallet name: ")
                 include_subwallet_webhook = await prompt(
                     "(Y/N) Create sub-wallet webhook target: "
                 )
                 if include_subwallet_webhook.lower() == "y":
-                    created = await faber_agent.agent.register_or_switch_wallet(
+                    created = await healthInstitute_agent.agent.register_or_switch_wallet(
                         target_wallet_name,
-                        webhook_port=faber_agent.agent.get_new_webhook_port(),
+                        webhook_port=healthInstitute_agent.agent.get_new_webhook_port(),
                         public_did=True,
-                        mediator_agent=faber_agent.mediator_agent,
-                        endorser_agent=faber_agent.endorser_agent,
-                        taa_accept=faber_agent.taa_accept,
+                        mediator_agent=healthInstitute_agent.mediator_agent,
+                        endorser_agent=healthInstitute_agent.endorser_agent,
+                        taa_accept=healthInstitute_agent.taa_accept,
                     )
                 else:
-                    created = await faber_agent.agent.register_or_switch_wallet(
+                    created = await healthInstitute_agent.agent.register_or_switch_wallet(
                         target_wallet_name,
                         public_did=True,
-                        mediator_agent=faber_agent.mediator_agent,
-                        endorser_agent=faber_agent.endorser_agent,
-                        cred_type=faber_agent.cred_type,
-                        taa_accept=faber_agent.taa_accept,
+                        mediator_agent=healthInstitute_agent.mediator_agent,
+                        endorser_agent=healthInstitute_agent.endorser_agent,
+                        cred_type=healthInstitute_agent.cred_type,
+                        taa_accept=healthInstitute_agent.taa_accept,
                     )
                 # create a schema and cred def for the new wallet
                 # TODO check first in case we are switching between existing wallets
                 if created:
                     # TODO this fails because the new wallet doesn't get a public DID
-                    await faber_agent.create_schema_and_cred_def(
-                        schema_name=faber_schema_name,
-                        schema_attrs=faber_schema_attrs,
+                    await healthInstitute_agent.create_schema_and_cred_def(
+                        schema_name=healthInstitute_schema_name,
+                        schema_attrs=healthInstitute_schema_attrs,
                     )
 
             elif option in "tT":
@@ -678,108 +817,156 @@ async def main(args):
                     CRED_FORMAT_INDY,
                     CRED_FORMAT_VC_DI,
                 ]:
-                    faber_agent.set_cred_type(new_cred_type)
+                    healthInstitute_agent.set_cred_type(new_cred_type)
                 else:
                     log_msg("Not a valid credential type.")
 
-            elif option == "1":
-                log_status("#13 Issue credential offer to X")
+            elif option == "1g":
+                log_status("#13 Issue good credential offer to X")
 
-                if faber_agent.aip == 10:
-                    offer_request = faber_agent.agent.generate_credential_offer(
-                        faber_agent.aip, None, faber_agent.cred_def_id, exchange_tracing
+                if healthInstitute_agent.aip == 10:
+                    offer_request = healthInstitute_agent.agent.generate_good_credential_offer(
+                        healthInstitute_agent.aip, None, healthInstitute_agent.cred_def_id, exchange_tracing
                     )
-                    await faber_agent.agent.admin_POST(
+                    await healthInstitute_agent.agent.admin_POST(
                         "/issue-credential/send-offer", offer_request
                     )
 
-                elif faber_agent.aip == 20:
-                    if faber_agent.cred_type == CRED_FORMAT_INDY:
-                        offer_request = faber_agent.agent.generate_credential_offer(
-                            faber_agent.aip,
-                            faber_agent.cred_type,
-                            faber_agent.cred_def_id,
+                elif healthInstitute_agent.aip == 20:
+                    if healthInstitute_agent.cred_type == CRED_FORMAT_INDY:
+                        offer_request = healthInstitute_agent.agent.generate_good_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.cred_def_id,
                             exchange_tracing,
                         )
 
-                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
-                        offer_request = faber_agent.agent.generate_credential_offer(
-                            faber_agent.aip,
-                            faber_agent.cred_type,
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_JSON_LD:
+                        offer_request = healthInstitute_agent.agent.generate_good_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
                             None,
                             exchange_tracing,
                         )
 
-                    elif faber_agent.cred_type == CRED_FORMAT_VC_DI:
-                        offer_request = faber_agent.agent.generate_credential_offer(
-                            faber_agent.aip,
-                            faber_agent.cred_type,
-                            faber_agent.cred_def_id,
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_VC_DI:
+                        offer_request = healthInstitute_agent.agent.generate_good_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.cred_def_id,
                             exchange_tracing,
                         )
 
                     else:
                         raise Exception(
-                            f"Error invalid credential type: {faber_agent.cred_type}"
+                            f"Error invalid credential type: {healthInstitute_agent.cred_type}"
                         )
 
-                    await faber_agent.agent.admin_POST(
+                    await healthInstitute_agent.agent.admin_POST(
                         "/issue-credential-2.0/send-offer", offer_request
                     )
 
                 else:
-                    raise Exception(f"Error invalid AIP level: {faber_agent.aip}")
+                    raise Exception(f"Error invalid AIP level: {healthInstitute_agent.aip}")
+
+            elif option == "1b":
+                log_status("#13 Issue bad credential offer to X")
+
+                if healthInstitute_agent.aip == 10:
+                    offer_request = healthInstitute_agent.agent.generate_bad_credential_offer(
+                        healthInstitute_agent.aip, None, healthInstitute_agent.cred_def_id, exchange_tracing
+                    )
+                    await healthInstitute_agent.agent.admin_POST(
+                        "/issue-credential/send-offer", offer_request
+                    )
+
+                elif healthInstitute_agent.aip == 20:
+                    if healthInstitute_agent.cred_type == CRED_FORMAT_INDY:
+                        offer_request = healthInstitute_agent.agent.generate_bad_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.cred_def_id,
+                            exchange_tracing,
+                        )
+
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_JSON_LD:
+                        offer_request = healthInstitute_agent.agent.generate_bad_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            None,
+                            exchange_tracing,
+                        )
+
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_VC_DI:
+                        offer_request = healthInstitute_agent.agent.generate_bad_credential_offer(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.cred_def_id,
+                            exchange_tracing,
+                        )
+
+                    else:
+                        raise Exception(
+                            f"Error invalid credential type: {healthInstitute_agent.cred_type}"
+                        )
+
+                    await healthInstitute_agent.agent.admin_POST(
+                        "/issue-credential-2.0/send-offer", offer_request
+                    )
+
+                else:
+                    raise Exception(f"Error invalid AIP level: {healthInstitute_agent.aip}")
 
             elif option == "2":
-                log_status("#20 Request proof of degree from alice")
-                if faber_agent.aip == 10:
+                log_status("#20 Request proof of health from patient")
+                if healthInstitute_agent.aip == 10:
                     proof_request_web_request = (
-                        faber_agent.agent.generate_proof_request_web_request(
-                            faber_agent.aip,
-                            faber_agent.cred_type,
-                            faber_agent.revocation,
+                        healthInstitute_agent.agent.generate_proof_request_web_request(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.revocation,
                             exchange_tracing,
                         )
                     )
-                    await faber_agent.agent.admin_POST(
+                    await healthInstitute_agent.agent.admin_POST(
                         "/present-proof/send-request", proof_request_web_request
                     )
                     pass
 
-                elif faber_agent.aip == 20:
-                    if faber_agent.cred_type == CRED_FORMAT_INDY:
+                elif healthInstitute_agent.aip == 20:
+                    if healthInstitute_agent.cred_type == CRED_FORMAT_INDY:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                             )
                         )
 
-                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_JSON_LD:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                             )
                         )
 
-                    elif faber_agent.cred_type == CRED_FORMAT_VC_DI:
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_VC_DI:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                             )
                         )
 
                     else:
                         raise Exception(
-                            "Error invalid credential type:" + faber_agent.cred_type
+                            "Error invalid credential type:" + healthInstitute_agent.cred_type
                         )
 
                     await agent.admin_POST(
@@ -787,21 +974,21 @@ async def main(args):
                     )
 
                 else:
-                    raise Exception(f"Error invalid AIP level: {faber_agent.aip}")
+                    raise Exception(f"Error invalid AIP level: {healthInstitute_agent.aip}")
 
             elif option == "2a":
-                log_status("#20 Request * Connectionless * proof of degree from alice")
-                if faber_agent.aip == 10:
+                log_status("#20 Request * Connectionless * proof of health from patient")
+                if healthInstitute_agent.aip == 10:
                     proof_request_web_request = (
-                        faber_agent.agent.generate_proof_request_web_request(
-                            faber_agent.aip,
-                            faber_agent.cred_type,
-                            faber_agent.revocation,
+                        healthInstitute_agent.agent.generate_proof_request_web_request(
+                            healthInstitute_agent.aip,
+                            healthInstitute_agent.cred_type,
+                            healthInstitute_agent.revocation,
                             exchange_tracing,
                             connectionless=True,
                         )
                     )
-                    proof_request = await faber_agent.agent.admin_POST(
+                    proof_request = await healthInstitute_agent.agent.admin_POST(
                         "/present-proof/create-request", proof_request_web_request
                     )
                     pres_req_id = proof_request["presentation_exchange_id"]
@@ -810,7 +997,7 @@ async def main(args):
                         or (
                             "http://"
                             + os.getenv("DOCKERHOST").replace(
-                                "{PORT}", str(faber_agent.agent.admin_port + 1)
+                                "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
                             )
                             + "/webhooks"
                         )
@@ -823,51 +1010,51 @@ async def main(args):
                     )
                     qr.print_ascii(invert=True)
 
-                elif faber_agent.aip == 20:
-                    if faber_agent.cred_type == CRED_FORMAT_INDY:
+                elif healthInstitute_agent.aip == 20:
+                    if healthInstitute_agent.cred_type == CRED_FORMAT_INDY:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                                 connectionless=True,
                             )
                         )
-                    elif faber_agent.cred_type == CRED_FORMAT_JSON_LD:
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_JSON_LD:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                                 connectionless=True,
                             )
                         )
 
-                    elif faber_agent.cred_type == CRED_FORMAT_VC_DI:
+                    elif healthInstitute_agent.cred_type == CRED_FORMAT_VC_DI:
                         proof_request_web_request = (
-                            faber_agent.agent.generate_proof_request_web_request(
-                                faber_agent.aip,
-                                faber_agent.cred_type,
-                                faber_agent.revocation,
+                            healthInstitute_agent.agent.generate_proof_request_web_request(
+                                healthInstitute_agent.aip,
+                                healthInstitute_agent.cred_type,
+                                healthInstitute_agent.revocation,
                                 exchange_tracing,
                                 connectionless=True,
                             )
                         )
                     else:
                         raise Exception(
-                            "Error invalid credential type:" + faber_agent.cred_type
+                            "Error invalid credential type:" + healthInstitute_agent.cred_type
                         )
 
-                    proof_request = await faber_agent.agent.admin_POST(
+                    proof_request = await healthInstitute_agent.agent.admin_POST(
                         "/present-proof-2.0/create-request", proof_request_web_request
                     )
                     pres_req_id = proof_request["pres_ex_id"]
                     url = (
                         "http://"
                         + os.getenv("DOCKERHOST").replace(
-                            "{PORT}", str(faber_agent.agent.admin_port + 1)
+                            "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
                         )
                         + "/webhooks/pres_req/"
                         + pres_req_id
@@ -881,12 +1068,12 @@ async def main(args):
                     )
                     qr.print_ascii(invert=True)
                 else:
-                    raise Exception(f"Error invalid AIP level: {faber_agent.aip}")
+                    raise Exception(f"Error invalid AIP level: {healthInstitute_agent.aip}")
 
             elif option == "3":
                 msg = await prompt("Enter message: ")
-                await faber_agent.agent.admin_POST(
-                    f"/connections/{faber_agent.agent.connection_id}/send-message",
+                await healthInstitute_agent.agent.admin_POST(
+                    f"/connections/{healthInstitute_agent.agent.connection_id}/send-message",
                     {"content": msg},
                 )
 
@@ -895,15 +1082,15 @@ async def main(args):
                     "Creating a new invitation, please receive "
                     "and accept this invitation using Alice agent"
                 )
-                await faber_agent.generate_invitation(
+                await healthInstitute_agent.generate_invitation(
                     display_qr=True,
-                    reuse_connections=faber_agent.reuse_connections,
-                    multi_use_invitations=faber_agent.multi_use_invitations,
-                    public_did_connections=faber_agent.public_did_connections,
+                    reuse_connections=healthInstitute_agent.reuse_connections,
+                    multi_use_invitations=healthInstitute_agent.multi_use_invitations,
+                    public_did_connections=healthInstitute_agent.public_did_connections,
                     wait=True,
                 )
 
-            elif option == "5" and faber_agent.revocation:
+            elif option == "5" and healthInstitute_agent.revocation:
                 rev_reg_id = (await prompt("Enter revocation registry ID: ")).strip()
                 cred_rev_id = (await prompt("Enter credential revocation ID: ")).strip()
                 publish = (
@@ -916,13 +1103,13 @@ async def main(args):
                         if is_anoncreds
                         else "/revocation/revoke"
                     )
-                    await faber_agent.agent.admin_POST(
+                    await healthInstitute_agent.agent.admin_POST(
                         endpoint,
                         {
                             "rev_reg_id": rev_reg_id,
                             "cred_rev_id": cred_rev_id,
                             "publish": publish,
-                            "connection_id": faber_agent.agent.connection_id,
+                            "connection_id": healthInstitute_agent.agent.connection_id,
                             # leave out thread_id, let aca-py generate
                             # "thread_id": "12345678-4444-4444-4444-123456789012",
                             "comment": "Revocation reason goes here ...",
@@ -931,15 +1118,15 @@ async def main(args):
                 except ClientError:
                     pass
 
-            elif option == "6" and faber_agent.revocation:
+            elif option == "6" and healthInstitute_agent.revocation:
                 try:
                     endpoint = (
                         "/anoncreds/revocation/publish-revocations"
                         if is_anoncreds
                         else "/revocation/publish-revocations"
                     )
-                    resp = await faber_agent.agent.admin_POST(endpoint, {})
-                    faber_agent.agent.log(
+                    resp = await healthInstitute_agent.agent.admin_POST(endpoint, {})
+                    healthInstitute_agent.agent.log(
                         "Published revocations for {} revocation registr{} {}".format(
                             len(resp["rrid2crid"]),
                             "y" if len(resp["rrid2crid"]) == 1 else "ies",
@@ -948,26 +1135,26 @@ async def main(args):
                     )
                 except ClientError:
                     pass
-            elif option == "7" and faber_agent.revocation:
+            elif option == "7" and healthInstitute_agent.revocation:
                 try:
                     endpoint = (
-                        f"/anoncreds/revocation/active-registry/{faber_agent.cred_def_id}/rotate"
+                        f"/anoncreds/revocation/active-registry/{healthInstitute_agent.cred_def_id}/rotate"
                         if is_anoncreds
-                        else f"/revocation/active-registry/{faber_agent.cred_def_id}/rotate"
+                        else f"/revocation/active-registry/{healthInstitute_agent.cred_def_id}/rotate"
                     )
-                    resp = await faber_agent.agent.admin_POST(
+                    resp = await healthInstitute_agent.agent.admin_POST(
                         endpoint,
                         {},
                     )
-                    faber_agent.agent.log(
+                    healthInstitute_agent.agent.log(
                         "Rotated registries for {}. Decommissioned Registries: {}".format(
-                            faber_agent.cred_def_id,
+                            healthInstitute_agent.cred_def_id,
                             json.dumps(list(resp["rev_reg_ids"]), indent=4),
                         )
                     )
                 except ClientError:
                     pass
-            elif option == "8" and faber_agent.revocation:
+            elif option == "8" and healthInstitute_agent.revocation:
                 if is_anoncreds:
                     endpoint = "/anoncreds/revocation/registries"
                     states = [
@@ -999,11 +1186,11 @@ async def main(args):
                 if state not in states:
                     state = "active"
                 try:
-                    resp = await faber_agent.agent.admin_GET(
+                    resp = await healthInstitute_agent.agent.admin_GET(
                         endpoint,
                         params={"state": state},
                     )
-                    faber_agent.agent.log(
+                    healthInstitute_agent.agent.log(
                         "Registries (state = '{}'): {}".format(
                             state,
                             json.dumps(list(resp["rev_reg_ids"]), indent=4),
@@ -1011,23 +1198,23 @@ async def main(args):
                     )
                 except ClientError:
                     pass
-            elif option in "uU" and faber_agent.multitenant:
+            elif option in "uU" and healthInstitute_agent.multitenant:
                 log_status("Upgrading wallet to anoncreds. Wait a couple seconds...")
-                await faber_agent.agent.admin_POST(
+                await healthInstitute_agent.agent.admin_POST(
                     "/anoncreds/wallet/upgrade",
-                    params={"wallet_name": faber_agent.agent.wallet_name},
+                    params={"wallet_name": healthInstitute_agent.agent.wallet_name},
                 )
                 upgraded_to_anoncreds = True
                 await asyncio.sleep(2.0)
 
-        if faber_agent.show_timing:
-            timing = await faber_agent.agent.fetch_timing()
+        if healthInstitute_agent.show_timing:
+            timing = await healthInstitute_agent.agent.fetch_timing()
             if timing:
-                for line in faber_agent.agent.format_timing(timing):
+                for line in healthInstitute_agent.agent.format_timing(timing):
                     log_msg(line)
 
     finally:
-        terminated = await faber_agent.terminate()
+        terminated = await healthInstitute_agent.terminate()
 
     await asyncio.sleep(0.1)
 
@@ -1036,7 +1223,7 @@ async def main(args):
 
 
 if __name__ == "__main__":
-    parser = arg_parser(ident="faber", port=8020)
+    parser = arg_parser(ident="healthInstitute", port=8020)
     args = parser.parse_args()
 
     ENABLE_PYDEVD_PYCHARM = os.getenv("ENABLE_PYDEVD_PYCHARM", "").lower()
@@ -1054,7 +1241,7 @@ if __name__ == "__main__":
             import pydevd_pycharm
 
             print(
-                "Faber remote debugging to "
+                "HealthInstitute remote debugging to "
                 f"{PYDEVD_PYCHARM_HOST}:{PYDEVD_PYCHARM_CONTROLLER_PORT}"
             )
             pydevd_pycharm.settrace(
