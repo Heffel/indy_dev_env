@@ -93,19 +93,19 @@ cd ../../lab/runners
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice_patient --port 8030 
 ```   
 
-06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Faber e ACME que registrarão seus esquemas na blockchain. 
+06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Health Institute e Immunization Center que registrarão seus esquemas na blockchain. 
 
 07 - De volta ao terminal, verifique que o agente Alice está rodando e aguardando conexão 
 ```bash   
 #9 Input invitation details 
 Invite details:            
 ```   
-08 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+08 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Bob através do comando: 
 ```bash   
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_patient --port 8050 
 ```   
 
-09 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+09 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Health Institution através do comando: 
 ```bash   
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
 ```   
@@ -166,12 +166,14 @@ Expanda o campo "raw data" para verificar a estrutura do esquema.
 
 ```bash   
 Invitation Data: 
-{"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
+{"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "d7036e77-455d-4c37-b6a1-8852dfac8640", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MkegshLyXJRnyYTCirvPR81J725UBNpJUN9sNZGjpdDY8d"], "serviceEndpoint": "http://localhost:8020"}], "label": "healthInstitute.agent"}
+ 
 ```   
 
 13 - Utilize apenas a parte depois de Data: 
 ```bash   
-{"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
+{"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "d7036e77-455d-4c37-b6a1-8852dfac8640", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MkegshLyXJRnyYTCirvPR81J725UBNpJUN9sNZGjpdDY8d"], "serviceEndpoint": "http://localhost:8020"}], "label": "healthInstitute.agent"}
+ 
 ``` 
 
 Cole no terminal do agente Alice Patient, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
@@ -204,7 +206,7 @@ HealthInstitute | Check for endorser role ...
 [1/2/3/4/T/X]                              
 ```   
 
-16 - Para testar a comunicação entre agentes, podemos enviar mensagens de alice para Faber ou vice e versa. No exemplo mandaremos um "Hello from Alice" de Alice para Health Institute, escolhendo a opção 3 em Alice, informando a mensagem e verificando a chegada dela em Health Institute. 
+16 - Para testar a comunicação entre agentes, podemos enviar mensagens de Alice para Health Institute ou vice e versa. No exemplo mandaremos um "Hello from Alice" de Alice para Health Institute, escolhendo a opção 3 em Alice, informando a mensagem e verificando a chegada dela em Health Institute. 
 ```bash  
 Alice      | Connected 
 Alice      | Check for endorser role ... 
@@ -238,7 +240,7 @@ HealthInstitute      | Received message: Hello from Alice
 [1/2/3/4/T/X]                                      
 ```   
 
-17 - Em Health Institute emitiremos uma credencial para Alice, que conterá prova de que Alice é maior de idade e possui uma condição especial. No agente Faber escolha a opção 1g. Observe em Health Institute: 
+17 - Em Health Institute emitiremos uma credencial para Alice, que conterá prova de que Alice é maior de idade e possui uma condição especial. No agente Health Institute escolha a opção 1g. Observe em Health Institute: 
 ```bash  
 #13 Issue good credential offer to X
 HealthInstitute | Credential: state = offer-sent, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
@@ -305,7 +307,7 @@ HealthInstitute | Check for endorser role ...
     (X) Exit?                                                                                                                                                                                                     
 [1/2/3/4/T/X]                              
 ```   
-23 - Em Health Institute emitiremos uma credencial para Bob, que conterá prova de que Bob é menor de idade e não possui uma condição especial. No agente Faber escolha a opção 1b. Observe em Health Institute: 
+23 - Em Health Institute emitiremos uma credencial para Bob, que conterá prova de que Bob é menor de idade e não possui uma condição especial. No agente Health Institute escolha a opção 1b. Observe em Health Institute: 
 ```bash  
 #13 Issue bad credential offer to X
 HealthInstitute | Credential: state = offer-sent, cred_ex_id = 23da3f78-ad5a-42ca-b89d-8c813c934839
@@ -347,167 +349,217 @@ Bob      | schema_id 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
 Bob      | Credential: state = done, cred_ex_id = d3ea0881-43bb-4727-a881-5b5851a633a6
 
 ```   
-#PAREI AQUI
-19 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente Immunization Center. Para subir o agente Immunization Center repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Immunization Center através do comando: 
+25 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente Immunization Center. Para subir o agente Immunization Center repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Immunization Center através do comando: 
 ```bash   
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m immuCent --port 8040 
 ```   
 
-20 - Observe que no processo de inicialização, o agente ACME exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
+26 - Observe que no processo de inicialização, o agente Immunization Center exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
 ```bash   
-#3/4 Create a new schema/cred def on the ledger 
-Schema: 
-  { 
-    "sent": { 
-      "schema_id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:13.29.17", 
-      "schema": { 
-        "ver": "1.0", 
-        "id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:13.29.17", 
-        "name": "employee id schema", 
-        "version": "13.29.17", 
-        "attrNames": [ 
-          "employee_id", 
-          "date", 
-          "position", 
-          "name" 
-        ], 
-        "seqNo": 12 
-      } 
-    }, 
-    "schema_id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:13.29.17", 
-    "schema": { 
-      "ver": "1.0", 
-      "id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:13.29.17", 
-      "name": "employee id schema", 
-      "version": "13.29.17", 
-      "attrNames": [ 
-        "employee_id", 
-        "date", 
-        "position", 
-        "name" 
-      ], 
-      "seqNo": 12 
-    } 
-  } 
-Schema ID: 7eB7xGuxATC2UyF589kk1n:2:employee id schema:13.29.17 
-Cred def ID: 7eB7xGuxATC2UyF589kk1n:3:CL:12:acme.agent.employee_id_schema 
-Publish schema/cred def duration: 9.75s 
-Schema: 
-  { 
-    "sent": { 
-      "schema_id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:18.18.18", 
-      "schema": { 
-        "ver": "1.0", 
-        "id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:18.18.18", 
-        "name": "employee id schema", 
-        "version": "18.18.18", 
-        "attrNames": [ 
-          "name", 
-          "position", 
-          "date", 
-          "employee_id" 
-        ], 
-        "seqNo": 14 
-      } 
-    }, 
-    "schema_id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:18.18.18", 
-    "schema": { 
-      "ver": "1.0", 
-      "id": "7eB7xGuxATC2UyF589kk1n:2:employee id schema:18.18.18", 
-      "name": "employee id schema", 
-      "version": "18.18.18", 
-      "attrNames": [ 
-        "name", 
-        "position", 
-        "date", 
-        "employee_id" 
-      ], 
-      "seqNo": 14 
-    } 
-  } 
-Schema ID: 7eB7xGuxATC2UyF589kk1n:2:employee id schema:18.18.18 
-Cred def ID: 7eB7xGuxATC2UyF589kk1n:3:CL:14:acme.agent.employee_id_schema 
-Publish schema and cred def duration: 14.54s 
+#3/4 Create a new schema/cred def on the ledger
+Schema:
+  {
+    "sent": {
+      "schema_id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:47.13.59",
+      "schema": {
+        "ver": "1.0",
+        "id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:47.13.59",
+        "name": "immunization id schema",
+        "version": "47.13.59",
+        "attrNames": [
+          "date",
+          "position",
+          "patient_id",
+          "name"
+        ],
+        "seqNo": 24
+      }
+    },
+    "schema_id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:47.13.59",
+    "schema": {
+      "ver": "1.0",
+      "id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:47.13.59",
+      "name": "immunization id schema",
+      "version": "47.13.59",
+      "attrNames": [
+        "date",
+        "position",
+        "patient_id",
+        "name"
+      ],
+      "seqNo": 24
+    }
+  }
+  
+Schema ID: 4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:47.13.59
+Cred def ID: 4BNtF7ULEegATHDPq5qF2F:3:CL:24:immunization.agent.immunization_id_schema
+Publish schema/cred def duration: 9.23s
+Schema:
+  {
+    "sent": {
+      "schema_id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:16.22.94",
+      "schema": {
+        "ver": "1.0",
+        "id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:16.22.94",
+        "name": "immunization id schema",
+        "version": "16.22.94",
+        "attrNames": [
+          "name",
+          "patient_id",
+          "date",
+          "position"
+        ],
+        "seqNo": 26
+      }
+    },
+    "schema_id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:16.22.94",
+    "schema": {
+      "ver": "1.0",
+      "id": "4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:16.22.94",
+      "name": "immunization id schema",
+      "version": "16.22.94",
+      "attrNames": [
+        "name",
+        "patient_id",
+        "date",
+        "position"
+      ],
+      "seqNo": 26
+    }
+  }
+
+Schema ID: 4BNtF7ULEegATHDPq5qF2F:2:immunization id schema:16.22.94
+Cred def ID: 4BNtF7ULEegATHDPq5qF2F:3:CL:26:immunization.agent.immunization_id_schema
+Publish schema and cred def duration: 6.49s
+
 ```   
 
-21 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que assim como Faber, ACME gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
+27 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que assim como Health Institute, Immunization Center gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
 
 - Message wrapper 
 - Metadata 
 - Transaction 
-O campo Transaction conterá o atributo "Alias: acme.agent" 
+O campo Transaction conterá o atributo "Alias: immunization.agent" 
 
 Expanda o campo "raw data" para verificar a estrutura do esquema. 
 
-22 - Para estabelecer comunicação entre Alice e ACME, em Alice escolha a opção 4 para informar um novo convite de conexão 
+28 - Para estabelecer comunicação entre Alice e Immunization Center, em Alice escolha a opção 4 para informar um novo convite de conexão 
 
-23 - Em ACME, assim como com Faber, copie os dados de conexão e informe em Alice. Alice exibirá os dados da resposta do convite. 
+29 - Em Immunization Center, assim como com Health Institute, copie os dados de conexão e informe em Alice. Alice exibirá os dados da resposta do convite. 
 
-22 -  O menu do agente ACME deve se parecer com: 
+30 -  O menu do agente Immunization Center deve se parecer com: 
 ```bash   
-Acme       | Connected 
-acme.agent handle_connections completed completed 
-    (1) Issue Credential 
-    (2) Send Proof Request 
-    (3) Send Message 
-    (X) Exit?                                                                                                                                                                                                                                  
-
-[1/2/3/X]              
+Immunization | Connected
+immunization.agent handle_connections completed completed
+    (1) Issue Credential
+    (2) Send Proof Request
+    (3) Send Message
+    (4) Create New Invitation
+    (X) Exit?                                                                                                                                                                                                     
+[1/2/3/X]                       
 ```   
 
-No cenário proposto, ACME solicitará de Alice uma apresentação onde está deve prover uma credencial com prova de sua graduação, que foi gerada anteriormente por Faber. Uma vez feita a solicitação, Alice irá responder automaticamente com a credencial apropriada que será validada por ACME. Em seguida, o operador de ACME por sua vez emitirá uma segunda credencial verificável para Alice, através da opção 1, com o cargo de CEO. Podemos observar no código do agente ACME: 
+No cenário proposto, Immunization Center solicitará de Alice uma apresentação onde está deve prover uma credencial com prova de sua idade e condição especial, que foi gerada anteriormente por Healt Institute. Uma vez feita a solicitação, Alice irá responder automaticamente com a credencial apropriada que será validada. Em seguida, o operador de Immunization Center por sua vez emitirá uma segunda credencial verificável para Alice, através da opção 1, com o identificação positiva para a campanha. Podemos observar no código do agente Immunization Center: 
 
 ```python   
-                agent.cred_attrs[cred_def_id] = { 
-                    "employee_id": "ACME0009", 
-                    "name": "Alice Smith", 
-                    "date": date.isoformat(date.today()), 
-                    "position": "CEO" 
-                } 
-                cred_preview = { 
-                    "@type": CRED_PREVIEW_TYPE, 
-                    "attributes": [ 
-                        {"name": n, "value": v} 
-                        for (n, v) in agent.cred_attrs[cred_def_id].items() 
-                    ], 
-                } 
-                offer_request = { 
-                    "connection_id": agent.connection_id, 
-                    "comment": f"Offer on cred def id {cred_def_id}", 
-                    "credential_preview": cred_preview, 
-                    "filter": {"indy": {"cred_def_id": cred_def_id}}, 
-                } 
-                await agent.admin_POST( 
-                    "/issue-credential-2.0/send-offer", offer_request 
-                ) 
+                agent.cred_attrs[cred_def_id] = {
+                    "patient_id": "IMMUN0009",
+                    "name": "Alice Smith",
+                    "date": datetime.date.today().strftime("%Y-%m-%d"),
+                    "position": "APPROVED"
+                }
+                cred_preview = {
+                    "@type": CRED_PREVIEW_TYPE,
+                    "attributes": [
+                        {"name": n, "value": v}
+                        for (n, v) in agent.cred_attrs[cred_def_id].items()
+                    ],
+                }
+                offer_request = {
+                    "connection_id": agent.connection_id,
+                    "comment": f"Offer on cred def id {cred_def_id}",
+                    "credential_preview": cred_preview,
+                    "filter": {"indy": {"cred_def_id": cred_def_id}},
+                }
+                await agent.admin_POST(
+                    "/issue-credential-2.0/send-offer", offer_request
+                )
 ```   
 
-23 - Em ACME selecione a opção 2 
+31 - Em Immunization Center selecione a opção 2 
 
-24 - Alice responderá com a credencial de Faber: 
+32 - Alice responderá com a credencial gerada por Health Institute: 
 
 ```bash   
-#24 Query for credentials in the wallet that satisfy the proof request 
-Alice      | No 'by_format' in message: {'connection_id': '678489c3-e4ff-4700-aec9-acd7eccbd101', 'role': 'prover', 'initiator': 'external', 'auto_verify': False, 'thread_id': '2d99ba53-f113-4434-a49d-2f2608bf8194', 'state': 'request-received', 'trace': False, 'created_at': '2024-10-30T06:55:01.257315Z', 'updated_at': '2024-10-30T06:55:01.257315Z', 'pres_ex_id': '837ce7ea-a06c-48c6-aff7-1dae9a92eb79'} 
+Presentation: message =  {'connection_id': '3864de0e-5e87-44b2-b103-d182b9548e33', 'role': 'prover', 'initiator': 'external', 'auto_verify': False, 'thread_id': '284e5599-52f5-421d-84c3-3791b9fc23d4', 'state': 'request-received', 'trace': False, 'created_at': '2024-11-08T16:40:38.917609Z', 'updated_at': '2024-11-08T16:40:38.917609Z', 'pres_ex_id': 'faf8e561-16b3-496a-9bb1-90cb5c421714'}
+Presentation: state =  request-received
+Presentation: pres_ex_id =  faf8e561-16b3-496a-9bb1-90cb5c421714
+Alice      | Presentation: state = request-received, pres_ex_id = faf8e561-16b3-496a-9bb1-90cb5c421714
+
+#24 CONTAINER Query for credentials in the wallet that satisfy the proof request
+Alice      | No 'by_format' in message: {'connection_id': '3864de0e-5e87-44b2-b103-d182b9548e33', 'role': 'prover', 'initiator': 'external', 'auto_verify': False, 'thread_id': '284e5599-52f5-421d-84c3-3791b9fc23d4', 'state': 'request-received', 'trace': False, 'created_at': '2024-11-08T16:40:38.917609Z', 'updated_at': '2024-11-08T16:40:38.917609Z', 'pres_ex_id': 'faf8e561-16b3-496a-9bb1-90cb5c421714'}
+Presentation: state = request-received, pres_ex_id = faf8e561-16b3-496a-9bb1-90cb5c421714
+
 ```
-25 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma. Agora a opção 5 listará duas credenciais que deve parecer como a seguinte:
+33 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
 ```bash
-All credentials: {'results': [{'referent': '743bd53a-6a4e-4220-8372-9a86a455359b', 'schema_id': 'Aj3WVTqSoLpEwEHJnENwqv:2:degree schema:62.15.36', 'cred_def_id': 'Aj3WVTqSoLpEwEHJnENwqv:3:CL:99:faber.agent.degree_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1730755630', 'date': '2018-05-28', 'name': 'Alice Smith', 'birthdate_dateint': '20001104', 'degree': 'Maths'}}, {'referent': 'a89f3d49-9bd7-4135-bd3e-e3a85b2acd55', 'schema_id': 'EuCjY2Cbt7WYyVGp4ch3AT:2:employee id schema:10.88.8', 'cred_def_id': 'EuCjY2Cbt7WYyVGp4ch3AT:3:CL:108:acme.agent.employee_id_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'name': 'Alice Smith', 'date': '2024-11-04', 'employee_id': 'ACME0009', 'position': 'CEO'}}]}
+#13 Issue credential offer to X
+Immunization | Credential: state = offer-sent, cred_ex_id = 80f31de8-950f-4e84-a722-3f33a08c677c
+Immunization | Credential: state = request-received, cred_ex_id = 80f31de8-950f-4e84-a722-3f33a08c677c
+Immunization | Credential: state = credential-issued, cred_ex_id = 80f31de8-950f-4e84-a722-3f33a08c677c
+Immunization | Credential: state = done, cred_ex_id = 80f31de8-950f-4e84-a722-3f33a08c677c
 ``` 
 
-Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Faber, 8031 para Alice e 8041 para ACME ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará disponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
+34 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma: 
+```bash
+#15 After receiving credential offer, send credential request
+Alice      | No 'by_format' in message: {'connection_id': '3864de0e-5e87-44b2-b103-d182b9548e33', 'role': 'holder', 'initiator': 'external', 'auto_offer': False, 'auto_issue': False, 'auto_remove': False, 'thread_id': '6da284c4-66fa-4ccd-89ac-dfbbc6308021', 'state': 'offer-received', 'trace': False, 'created_at': '2024-11-08T16:47:05.516422Z', 'updated_at': '2024-11-08T16:47:05.516422Z', 'cred_ex_id': 'fac740df-dfc1-43b6-8d40-32be7a85e2b3'}
+Alice      | Credential: state = request-sent, cred_ex_id = fac740df-dfc1-43b6-8d40-32be7a85e2b3
+Alice      | Credential: state = credential-received, cred_ex_id = fac740df-dfc1-43b6-8d40-32be7a85e2b3
+
+#18.1 Stored credential 65134589-ed80-4343-ad53-ed9ac82774cd in wallet
+Credential details:
+  {
+    "referent": "65134589-ed80-4343-ad53-ed9ac82774cd",
+    "schema_id": "BAjHxoChwzMvdogdRyrvaf:2:immunization id schema:98.76.68",
+    "cred_def_id": "BAjHxoChwzMvdogdRyrvaf:3:CL:42:immunization.agent.immunization_id_schema",
+    "rev_reg_id": null,
+    "cred_rev_id": null,
+    "attrs": {
+      "name": "Alice Smith",
+      "date": "2024-11-08",
+      "position": "APPROVED",
+      "patient_id": "IMMUN0009"
+    }
+  }
+  
+
+``` 
+
+Agora a opção 5 listará duas credenciais que deve parecer como a seguinte:
+
+```bash
+All credentials: {'results': [{'referent': '74429c6c-93ad-457a-b8fc-89ec5e07ece5', 'schema_id': 'VeBrp2W8QMaiCeqsVzxpwS:2:health schema:39.2.95', 'cred_def_id': 'VeBrp2W8QMaiCeqsVzxpwS:3:CL:36:healthInstitute.agent.health_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1731083813', 'date': '2018-05-28', 'condition': '1', 'name': 'Alice Smith', 'birthdate_dateint': '20001108'}}, {'referent': '65134589-ed80-4343-ad53-ed9ac82774cd', 'schema_id': 'BAjHxoChwzMvdogdRyrvaf:2:immunization id schema:98.76.68', 'cred_def_id': 'BAjHxoChwzMvdogdRyrvaf:3:CL:42:immunization.agent.immunization_id_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'position': 'APPROVED', 'date': '2024-11-08', 'patient_id': 'IMMUN0009', 'name': 'Alice Smith'}}]}
+
+```
+* Repita os passos 28,29,30,31 e 32 com a agente Bob e verifique que por não atender as condiçãoes desejadas este não será verificado
+
+Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Health Institute, 8031 para Alice, 8051 para Bob e 8041 para Immunization Center ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará disponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
 Para este exemplo a URL  do localhost é http://192.168.178.172
 
-http://192.168.178.172:8021/api/doc - FABER
+http://192.168.178.172:8021/api/doc - HEALTH INSTITUTE
 
 http://192.168.178.172:8031/api/doc - ALICE
 
-http://192.168.178.172:8041/api/doc - ACME
+http://192.168.178.172:8051/api/doc - BOB
+
+http://192.168.178.172:8041/api/doc - IMMUNIZATION CENTER
+
+![image](https://github.com/user-attachments/assets/04834245-62ea-4e60-bdc9-dddccfd7fdfa)
 
 
-![image](https://github.com/user-attachments/assets/90722dd6-5afa-47e5-ace3-63cf9d1fc600)
 
-Vejamos um exemplo de como podemos consulta as credenciais armazenadas de Alice:
+Vejamos um exemplo de como podemos consultaR as credenciais armazenadas de Alice:
 
 1 - Acesse http://192.168.178.172:8031/api/doc
 
@@ -517,7 +569,8 @@ Vejamos um exemplo de como podemos consulta as credenciais armazenadas de Alice:
 3 - Clique em "EXECUTE"
 
 4 - Role a página e confira as credenciais no corpo da resposta:
-![image](https://github.com/user-attachments/assets/ba08ba8b-b4eb-4817-876e-340dd10c5e1f)
+
+![image](https://github.com/user-attachments/assets/b07d92b4-234c-478b-a092-048e27bc83dc)
 
 
 * Mais informações de como utilizar a API podem ser encontradas nos links acima das opções da mesma:
