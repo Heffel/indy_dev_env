@@ -110,58 +110,59 @@ LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_pati
 LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
 ```   
 
-#PAREI AQUI
-
 09 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
 ```bash   
-#3/4 Create a new schema/cred def on the ledger 
-Schema: 
-  { 
-    "sent": { 
-      "schema_id": "HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62", 
-      "schema": { 
-        "ver": "1.0", 
-        "id": "HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62", 
-        "name": "degree schema", 
-        "version": "42.48.62", 
-        "attrNames": [ 
-          "timestamp", 
-          "name", 
-          "date", 
-          "degree", 
-          "birthdate_dateint" 
-        ], 
-        "seqNo": 8 
-      } 
-    }, 
-    "schema_id": "HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62", 
-    "schema": { 
-      "ver": "1.0", 
-      "id": "HhcefS5SXBKbdqRRMr9wXd:2:degree schema:42.48.62", 
-      "name": "degree schema", 
-      "version": "42.48.62", 
-      "attrNames": [ 
-        "timestamp", 
-        "name", 
-        "date", 
-        "degree", 
-        "birthdate_dateint" 
-      ], 
-      "seqNo": 8 
-    } 
-  } 
+#3/4 Create a new schema/cred def on the ledger
+Schema:
+  {
+    "sent": {
+      "schema_id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+      "schema": {
+        "ver": "1.0",
+        "id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+        "name": "health schema",
+        "version": "83.72.27",
+        "attrNames": [
+          "name",
+          "date",
+          "timestamp",
+          "birthdate_dateint",
+          "condition"
+        ],
+        "seqNo": 20
+      }
+    },
+    "schema_id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+    "schema": {
+      "ver": "1.0",
+      "id": "6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27",
+      "name": "health schema",
+      "version": "83.72.27",
+      "attrNames": [
+        "name",
+        "date",
+        "timestamp",
+        "birthdate_dateint",
+        "condition"
+      ],
+      "seqNo": 20
+    }
+  }
+  
+Schema ID: 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
+Cred def ID: 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
 ```   
 
-10 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que diferentemente de Alice, Faber gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
+10 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que diferentemente de Alice Patient, Health Institute gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
 
 - Message wrapper 
 - Metadata 
 - Transaction 
-O campo Transaction conterá o atributo "Alias: faber.agent" 
+O campo Transaction conterá o atributo "Alias: healthInstitute.agent" 
 
 Expanda o campo "raw data" para verificar a estrutura do esquema. 
 
-11 - De volta ao terminal, verifique que o agente Faber está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
+11 - De volta ao terminal, verifique que o agente Health Institute está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
 * ### Não copie os dados aqui apresentados para conexões, utilize os gerados no terminal da própria máquina.
 
 ```bash   
@@ -174,7 +175,7 @@ Invitation Data:
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "8226a8df-58b3-4abd-9659-c97e784ae6ed", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MksZo11N7Wz9hHnBNtk2krbNguNC4AHTk8SJ6hSmBVMwid"], "serviceEndpoint": "http://localhost:8020"}], "label": "faber.agent"} 
 ``` 
 
-Cole no terminal do agente Alice, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
+Cole no terminal do agente Alice Patient, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
 
 13 -  O menu do agente Alice deve se parecer com: 
 ```bash   
@@ -188,7 +189,7 @@ Connect duration: 0.35s
 
 [3/4/X]                          
 ```   
-
+##PAREI AQUI
 14 - O menu do agente Faber deve se parecer com: 
 ```bash   
 Faber      | Connected 
