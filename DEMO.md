@@ -1,22 +1,22 @@
-# Demonstração Faber - Alice - ACME   
+# Demonstração Health Institute - Alice Patient - Imunization Center   
 
 ### Este é um roteiro de demonstração de agentes Aries com objetivo de observar a emissão e validação de credenciais verificáveis na stack hyperledger assim como a interação dos agentes com a blockchain indy.  
   
 
-### Os Agentes; Faber, Alice e ACME são adaptações dos agentes de mesmo nome fornecidos pela aca-py.org. Para mais informações verificar https://aca-py.org/latest/aca-py.org/  
+### Os Agentes; Health Institute(healthInst), Alice Patient(alice_patient), Bob Patient(bob_patient) e Imunization Center(ImmuCent) são adaptações dos agentes Faber, Alice e ACME fornecidos pela aca-py.org. Para mais informações verificar https://aca-py.org/latest/aca-py.org/  
   
 
-### Faber  
+### Health Institute  
 
-Emissor de credencial: emitirá credencial para Alice contendo formação acadêmica. A implementação do agente Faber também permite a validação de credenciais, no entanto esta função não será explorada nesta demo.  
+Emissor de credenciais: emitirá credenciais para Alice e Bob contendo informações que os classificarão ou não para uma campanha de vacinação, onde Alice será maior de 18 anos e portadora de uma condição especial, simbolizada pelo status 1 e Bob será menor de 18 anos e não portador da condição, simbolizado pelo número 0. A implementação do agente Health Institute também possui um método que permite a validação de credenciais emitidas por ele, no entanto esta função não será explorada nesta demo.  
   
 
-### Alice  
-Estudante formada na Faber University. Alice solicitará uma credencial verificavel a Faber contendo prova de sua formação acadêmica. Essa será apresentada a ACME como requisito para uma candidatura de emprego.  
+### Alice Patient e Bob Patient 
+Pacientes candidatos a uma campanha de vacinação. Tanto Alice quanto Bob solicitarão uma credencial verificavel ao Health Institute contendo prova de sua condição de saúde e idade. Essa será apresentada ao Immunization Center como requisito para uma campanha experimental de vacinação.  
 
 
-### ACME  
-Verificador/Emissor de credencial: ACME solicitará de Alice uma apresentação verificável onde Alice apresentará a credencial gerada por Faber contendo prova de sua formação acadêmica. ACME será capaz de verificar a credencial e como resultado emitir uma nova credencial contendo o cargo de Alice.  
+### Immunization Center  
+Verificador/Emissor de credencial: Immunization Center solicitará de Alice e Bob uma apresentação verificável onde ambos apresentarão a credencial gerada pelo Health Institute contendo prova de sua idade e condição. Immunization Center também é capaz de emitir uma credencial uma nova credencial contendo a aprovação para a campanha.  
 
 
 ## SETUP  
@@ -90,23 +90,29 @@ cd ../../lab/runners
 
 05 - Uma vez na pasta runners execute o agente Alice através do comando: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice --port 8030 
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice_patient --port 8030 
 ```   
 
 06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Faber e ACME que registrarão seus esquemas na blockchain. 
 
 07 - De volta ao terminal, verifique que o agente Alice está rodando e aguardando conexão 
 ```bash   
-#9 Input faber.py invitation details 
+#9 Input invitation details 
 Invite details:            
 ```   
-
-08 - Para subir o agente Faber repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+09 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m faber --port 8020 
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_patient --port 8050 
 ```   
 
-09 - Observe que no processo de inicialização, o agente Faber exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
+10 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Faber através do comando: 
+```bash   
+LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
+```   
+
+#PAREI AQUI
+
+09 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
 ```bash   
 #3/4 Create a new schema/cred def on the ledger 
 Schema: 
