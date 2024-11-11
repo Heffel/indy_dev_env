@@ -50,6 +50,7 @@ cd ~
 cp -r ../../lab/indy_dev_env/runners/ ../../lab/runners 
 ```  
 
+### É importante que a pasta runners seja copiada para a pasta lab. A tentativa de rodar os agentes em sua localização original (dentro da pasta do repositório git) pode encontrar problemas de inicialização dos mesmos.
 
 02 - Obtendo LEDGER_URL: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos informar o ip correto para que os agentes possam encontrar o gênesis file de nossa von-network. 
 
@@ -501,6 +502,8 @@ Alice      | No 'by_format' in message: {'connection_id': '3864de0e-5e87-44b2-b1
 Presentation: state = request-received, pres_ex_id = faf8e561-16b3-496a-9bb1-90cb5c421714
 
 ```
+### É importante ressaltar que um bug nesse momento está impedindo que Alice encontre a credencial que deveria utilizar para a apresentação da verificação. Estamos trabalhando na correção deste contratempo.
+
 33 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
 ```bash
 #13 Issue credential offer to X
