@@ -36,7 +36,10 @@ A demonstração proposta requer a realização dos passos contidos no arquivo [
 	Exemplo: se a pasta do projeto está salva em  
 	C:/media/user/projetos/indy_dev_env/ 
 	copie a pasta "runners" para 
-	C:/media/user/projetos/ 
+	C:/media/user/projetos/
+
+![image](https://github.com/user-attachments/assets/0b9f5ddf-0b6c-4eac-94e6-7cc567a65297)
+
 
 ### OU 
 
