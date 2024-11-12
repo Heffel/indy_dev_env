@@ -91,9 +91,11 @@ b1591e3c60e2   von-network-base   "./scripts/start_nod…"   24 hours ago   Up 2
 cd ../../lab/runners  
 ```   
 
-05 - Uma vez na pasta runners execute o agente Alice através do comando: 
+05 - Uma vez na pasta runners execute o agente Alice através do comando GENESIS_URL=[IP von-network]/genesis LEDGER_URL=[IP von-network] DEFAULT_POSTGRES=true python3 -m healthInst --port 8030:
+
+* Para o exemplo, a von-network está escutando em 192.168.178.172:9000 portanto o comando para executar Alice é:
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice_patient --port 8030 
+GENESIS_URL=http://192.168.178.172:9000/genesis LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m alice_patient --port 8030 
 ```   
 
 06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Health Institute e Immunization Center que registrarão seus esquemas na blockchain. 
@@ -105,12 +107,12 @@ Invite details:
 ```   
 08 - Para subir o agente Bob repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Bob através do comando: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_patient --port 8050 
+GENESIS_URL=http://192.168.178.172:9000/genesis LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m bob_patient --port 8050 
 ```   
 
 09 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Health Institution através do comando: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
+GENESIS_URL=http://192.168.178.172:9000/genesis LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m healthInst --port 8020 
 ```   
 10 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
 ```bash   
@@ -354,7 +356,7 @@ Bob      | Credential: state = done, cred_ex_id = d3ea0881-43bb-4727-a881-5b5851
 ```   
 25 - Mesmo tendo a capacidade de verificar a própria credencial, faremos uma solicitação de apresentação de credencial com o agente Immunization Center. Para subir o agente Immunization Center repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Immunization Center através do comando: 
 ```bash   
-LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m immuCent --port 8040 
+GENESIS_URL=http://192.168.178.172:9000/genesis LEDGER_URL=http://192.168.178.172:9000 DEFAULT_POSTGRES=true python3 -m immuCent --port 8040 
 ```   
 
 26 - Observe que no processo de inicialização, o agente Immunization Center exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
@@ -505,6 +507,7 @@ Presentation: state = request-received, pres_ex_id = faf8e561-16b3-496a-9bb1-90c
 
 ```
 ### É importante ressaltar que um bug nesse momento está impedindo que Alice encontre a credencial que deveria utilizar para a apresentação da verificação. Estamos trabalhando na correção deste contratempo.
+* Caso não houvesse problemas na rotina de verificação da demonstração de credenciais, seria esperado que o campo “verified" com o valor "true" fosse recuperado pela entidade verificadora, sendo possível se observar que o predicado foi provado sem revelar nenhum dos atributos, graças aos métodos ZKP embarcados pelos agentes. 
 
 33 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
 ```bash
