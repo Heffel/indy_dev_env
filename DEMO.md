@@ -3,7 +3,9 @@
 ### Este é um roteiro de demonstração de agentes Aries com objetivo de observar a emissão e validação de credenciais verificáveis na stack hyperledger assim como a interação dos agentes com a blockchain indy.  
   
 
-### Os Agentes; Health Institute(healthInst), Alice Patient(alice_patient), Bob Patient(bob_patient) e Imunization Center(ImmuCent) são adaptações dos agentes Faber, Alice e ACME fornecidos pela aca-py.org. Para mais informações verificar https://aca-py.org/latest/aca-py.org/  
+### Os Agentes; Health Institute(healthInst), Alice Patient(alice_patient), Bob Patient(bob_patient) e Imunization Center(ImmuCent) são adaptações dos agentes Faber, Alice e ACME fornecidos pela aca-py.org. Para mais informações verificar https://aca-py.org/latest/aca-py.org/
+
+### A ACA-Py oferece suporte ao Aries Interop Profile (AIP) 2.0, oferecendo protocolos importantes para emissão, verificação e retenção de VCs no formato Hyperledger AnonCreds cobrindo assim as operações ZKP que são utilizadas pelas implementações Aries/AnonCreds nos agentes. 
   
 
 ### Health Institute  
