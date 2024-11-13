@@ -170,6 +170,10 @@ O campo Transaction conterá o atributo "Alias: healthInstitute.agent"
 Expanda o campo "raw data" para verificar a estrutura do esquema. 
 
 12 - De volta ao terminal, verifique que o agente Health Institute está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
+
+![image](https://github.com/user-attachments/assets/b2f7edc3-1f9e-4c61-9238-13da3d2bcc2c)
+
+
 * ### Não copie os dados aqui apresentados para conexões, utilize os gerados no terminal da própria máquina.
 
 ```bash   
