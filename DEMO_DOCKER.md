@@ -10,15 +10,15 @@
 
 ### Health Institute  
 
-Emissor de credenciais: emitirá credenciais para Alice e Bob contendo informações que os classificarão ou não para uma campanha de vacinação, onde Alice será maior de 18 anos e portadora de uma condição especial, simbolizada pelo status 1 e Bob será menor de 18 anos e não portador da condição, simbolizado pelo número 0. A implementação do agente Health Institute também possui um método que permite a validação de credenciais emitidas por ele, no entanto esta função não será explorada nesta demo.  
+Emissor de credenciais: emitirá credenciais para Alice contendo informações que os classificarão ou não para uma campanha de vacinação, onde na opção "1g" Alice será maior de 18 anos e portadora de uma condição especial, simbolizada pelo status 1 e na opção "1b" Alce será menor de 18 anos e não portador da condição, simbolizado pelo número 0. A implementação do agente Health Institute também possui um método que permite a validação de credenciais emitidas por ele.  
   
 
-### Alice Patient e Bob Patient 
-Pacientes candidatos a uma campanha de vacinação. Tanto Alice quanto Bob solicitarão uma credencial verificavel ao Health Institute contendo prova de sua condição de saúde e idade. Essa será apresentada ao Immunization Center como requisito para uma campanha experimental de vacinação.  
+### Alice Patient
+Paciente candidato a uma campanha de vacinação. Alice solicita uma credencial verificavel ao Health Institute contendo prova de sua condição de saúde e idade. Essa será apresentada ao Immunization Center como requisito para uma campanha experimental de vacinação.  
 
 
 ### Immunization Center  
-Verificador/Emissor de credencial: Immunization Center solicitará de Alice e Bob uma apresentação verificável onde ambos apresentarão a credencial gerada pelo Health Institute contendo prova de sua idade e condição. Immunization Center também é capaz de emitir uma credencial uma nova credencial contendo a aprovação para a campanha.  
+Verificador/Emissor de credencial: Immunization Center solicitará de Alice uma apresentação verificável onde ela apresentará a credencial gerada pelo Health Institute contendo prova de sua idade e condição. Immunization Center também é capaz de emitir uma nova credencial contendo a aprovação para a campanha.  
 
 
 ## SETUP  
@@ -35,15 +35,16 @@ A demonstração proposta requer a realização dos passos contidos no arquivo [
 
 	Exemplo: se a pasta do projeto está salva em  
 	C:/media/user/projetos/indy_dev_env/ 
-	copie a pasta "runners" para 
+	copie a pasta "docker_demo" para 
 	C:/media/user/projetos/
 
-![image](https://github.com/user-attachments/assets/0b9f5ddf-0b6c-4eac-94e6-7cc567a65297)
+![image](https://github.com/user-attachments/assets/e089b029-e958-4dc3-97f1-8e7d27839374)
+
 
 
 ### OU 
 
-01b - Copiar a pasta 'runners' através da linha de comando da máquina virtual: 
+01b - Copiar a pasta 'docker_demo' através da linha de comando da máquina virtual: 
 - 01b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
 
 ```bash  
