@@ -9,12 +9,12 @@ from uuid import uuid4
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # noqa
 
-from agent_container import (  # noqa:E402
+from runners.agent_container import (  # noqa:E402
     arg_parser,
     create_agent_with_args,
     AriesAgent,
 )
-from support.utils import (  # noqa:E402
+from runners.support.utils import (  # noqa:E402
     check_requires,
     log_msg,
     log_status,
@@ -22,7 +22,6 @@ from support.utils import (  # noqa:E402
     prompt,
     prompt_loop,
 )
-
 
 import random
 
@@ -37,12 +36,12 @@ LOGGER = logging.getLogger(__name__)
 
 class ImmunizationAgent(AriesAgent):
     def __init__(
-        self,
-        ident: str,
-        http_port: int,
-        admin_port: int,
-        no_auto: bool = False,
-        **kwargs,
+            self,
+            ident: str,
+            http_port: int,
+            admin_port: int,
+            no_auto: bool = False,
+            **kwargs,
     ):
         super().__init__(
             ident,
@@ -77,9 +76,9 @@ class ImmunizationAgent(AriesAgent):
             print(self.ident, "set connection id", conn_id)
             self.connection_id = conn_id
         if (
-            message["connection_id"] == self.connection_id
-            and message["rfc23_state"] == "completed"
-            and (self._connection_ready and not self._connection_ready.done())
+                message["connection_id"] == self.connection_id
+                and message["rfc23_state"] == "completed"
+                and (self._connection_ready and not self._connection_ready.done())
         ):
             self.log("Connected")
             self._connection_ready.set_result(True)
@@ -123,7 +122,7 @@ class ImmunizationAgent(AriesAgent):
             pres_req = message["by_format"]["pres_request"]["indy"]
             pres = message["by_format"]["pres"]["indy"]
             is_proof_of_health = (
-                pres_req["name"] == "Proof of Health"
+                    pres_req["name"] == "Proof of Health"
             )
             if is_proof_of_health:
                 log_status("#28.1 Received proof of health, check claims")
@@ -158,7 +157,6 @@ async def main(args):
     d = datetime.date.today()
     birth_date = datetime.date(d.year - age, d.month, d.day)
     birth_date_format = "%Y%m%d"
-
 
     try:
         log_status(
@@ -265,11 +263,12 @@ async def main(args):
                     {
                         "name": "date",
                         "restrictions": [{"schema_name": "health schema"}]
-                    },
-                    {
-                        "name": "condition",
-                        "restrictions": [{"schema_name": "health schema"}]
                     }
+                    #                    ,
+                    #                    {
+                    #                        "name": "condition",
+                    #                        "restrictions": [{"schema_name": "health schema"}]
+                    #                    }
                 ]
                 req_preds = [
                     # ADDED
