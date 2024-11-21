@@ -36,18 +36,18 @@ LOGGER = logging.getLogger(__name__)
 
 class HealthInstituteAgent(AriesAgent):
     def __init__(
-        self,
-        ident: str,
-        http_port: int,
-        admin_port: int,
-        no_auto: bool = False,
-        endorser_role: str = None,
-        revocation: bool = False,
-        anoncreds_legacy_revocation: str = None,
-        log_file: str = None,
-        log_config: str = None,
-        log_level: str = None,
-        **kwargs,
+            self,
+            ident: str,
+            http_port: int,
+            admin_port: int,
+            no_auto: bool = False,
+            endorser_role: str = None,
+            revocation: bool = False,
+            anoncreds_legacy_revocation: str = None,
+            log_file: str = None,
+            log_config: str = None,
+            log_level: str = None,
+            **kwargs,
     ):
         super().__init__(
             ident,
@@ -332,6 +332,306 @@ class HealthInstituteAgent(AriesAgent):
         else:
             raise Exception(f"Error invalid AIP level: {self.aip}")
 
+    def generate_proof_request_web_request(
+            self, aip, cred_type, revocation, exchange_tracing, connectionless=False
+    ):
+        age = 18
+        d = datetime.date.today()
+        birth_date = datetime.date(d.year - age, d.month, d.day)
+        birth_date_format = "%Y%m%d"
+        if aip == 10:
+            req_attrs = [
+                {
+                    "name": "name",
+                    "restrictions": [{"schema_name": "health schema"}],
+                },
+                {
+                    "name": "date",
+                    "restrictions": [{"schema_name": "health schema"}],
+                },
+            ]
+            if revocation:
+                req_attrs.append(
+                    {
+                        "name": "health",
+                        "restrictions": [{"schema_name": "health schema"}],
+                        "non_revoked": {"to": int(time.time() - 1)},
+                    },
+                )
+            else:
+                req_attrs.append(
+                    {
+                        "name": "health",
+                        "restrictions": [{"schema_name": "health schema"}],
+                    }
+                )
+            if SELF_ATTESTED:
+                # test self-attested claims
+                req_attrs.append(
+                    {"name": "self_attested_thing"},
+                )
+            req_preds = [
+                # test zero-knowledge proofs
+                {
+                    "name": "birthdate_dateint",
+                    "p_type": "<=",
+                    "p_value": int(birth_date.strftime(birth_date_format)),
+                    "restrictions": [{"schema_name": "health schema"}],
+                }
+            ]
+            # Ensure no overlapping attributes between req_attrs and req_preds
+            req_attrs = [attr for attr in req_attrs if attr["name"] not in [pred["name"] for pred in req_preds]]
+
+            indy_proof_request = {
+                "name": "Proof of Health",
+                "version": "1.0",
+                "requested_attributes": {
+                    f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
+                },
+                "requested_predicates": {
+                    f"0_{req_pred['name']}_GE_uuid": req_pred for req_pred in req_preds
+                },
+            }
+
+            if revocation:
+                indy_proof_request["non_revoked"] = {"to": int(time.time())}
+
+            proof_request_web_request = {
+                "proof_request": indy_proof_request,
+                "trace": exchange_tracing,
+            }
+            if not connectionless:
+                proof_request_web_request["connection_id"] = self.connection_id
+            return proof_request_web_request
+
+        elif aip == 20:
+            if cred_type == CRED_FORMAT_INDY:
+                req_attrs = [
+                    {
+                        "name": "name",
+                        "restrictions": [{"schema_name": "health schema"}],
+                    },
+                    {
+                        "name": "date",
+                        "restrictions": [{"schema_name": "health schema"}],
+                    },
+                ]
+                if revocation:
+                    req_attrs.append(
+                        {
+                            "name": "health",
+                            "restrictions": [{"schema_name": "health schema"}],
+                            "non_revoked": {"to": int(time.time() - 1)},
+                        },
+                    )
+                else:
+                    req_attrs.append(
+                        {
+                            "name": "condition",
+                            "restrictions": [{"schema_name": "health schema"}],
+                        }
+                    )
+                if SELF_ATTESTED:
+                    # test self-attested claims
+                    req_attrs.append(
+                        {"name": "self_attested_thing"},
+                    )
+                req_preds = [
+                    # test zero-knowledge proofs
+                    {
+                        "name": "birthdate_dateint",
+                        "p_type": "<=",
+                        "p_value": int(birth_date.strftime(birth_date_format)),
+                        "restrictions": [{"schema_name": "health schema"}],
+                    },
+                    {
+                        "name": "condition",
+                        "p_type": ">=",
+                        "p_value": 1,
+                        "restrictions": [{"schema_name": "health schema"}],
+                    }
+
+                ]
+                # Ensure no overlapping attributes between req_attrs and req_preds
+                req_attrs = [attr for attr in req_attrs if attr["name"] not in [pred["name"] for pred in req_preds]]
+
+                indy_proof_request = {
+                    "name": "Proof of Health",
+                    "version": "1.0",
+                    "requested_attributes": {
+                        f"0_{req_attr['name']}_uuid": req_attr for req_attr in req_attrs
+                    },
+                    "requested_predicates": {
+                        f"0_{req_pred['name']}_GE_uuid": req_pred
+                        for req_pred in req_preds
+                    },
+                }
+
+                if revocation:
+                    indy_proof_request["non_revoked"] = {"to": int(time.time())}
+
+                proof_request_web_request = {
+                    "connection_id": self.connection_id,
+                    "presentation_request": {
+                        "indy": indy_proof_request
+                    },
+                    "by_format": {
+                        "indy": indy_proof_request
+                    }
+                }
+                if not connectionless:
+                    proof_request_web_request["connection_id"] = self.connection_id
+                    log_msg(f"Generated proof request web request: {proof_request_web_request}")
+                return proof_request_web_request
+
+            elif cred_type == CRED_FORMAT_VC_DI:
+                proof_request_web_request = {
+                    "comment": "Test proof request for VC-DI format",
+                    "presentation_request": {
+                        "dif": {
+                            "options": {
+                                "challenge": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+                                "domain": "4jt78h47fh47",
+                            },
+                            "presentation_definition": {
+                                "id": "5591656f-5b5d-40f8-ab5c-9041c8e3a6a0",
+                                "name": "Age Verification",
+                                "purpose": "We need to verify your age before entering a bar",
+                                "input_descriptors": [
+                                    {
+                                        "id": "age-verification",
+                                        "name": "A specific type of VC + Issuer",
+                                        "purpose": "We want a VC of this type generated by this issuer",
+                                        "schema": [
+                                            {
+                                                "uri": "https://www.w3.org/2018/credentials#VerifiableCredential"
+                                            }
+                                        ],
+                                        "constraints": {
+                                            "statuses": {
+                                                "active": {"directive": "disallowed"}
+                                            },
+                                            "limit_disclosure": "required",
+                                            "fields": [
+                                                {
+                                                    "path": ["$.issuer"],
+                                                    "filter": {
+                                                        "type": "string",
+                                                        "const": self.did,
+                                                    },
+                                                },
+                                                {"path": ["$.credentialSubject.name"]},
+                                                {"path": ["$.credentialSubject.condition"]},
+                                                {
+                                                    "path": [
+                                                        "$.credentialSubject.birthdate_dateint"
+                                                    ],
+                                                    "predicate": "preferred",
+                                                    "filter": {
+                                                        "type": "number",
+                                                        "maximum": int(
+                                                            birth_date.strftime(
+                                                                birth_date_format
+                                                            )
+                                                        ),
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    }
+                                ],
+                                "format": {
+                                    "di_vc": {
+                                        "proof_type": ["DataIntegrityProof"],
+                                        "cryptosuite": [
+                                            "anoncreds-2023",
+                                            "eddsa-rdfc-2022",
+                                        ],
+                                    }
+                                },
+                            },
+                        },
+                    },
+                }
+
+                if revocation:
+                    proof_request_web_request["presentation_request"]["dif"][
+                        "presentation_definition"
+                    ]["input_descriptors"][0]["constraints"]["statuses"]["active"][
+                        "directive"
+                    ] = "required"
+                if not connectionless:
+                    proof_request_web_request["connection_id"] = self.connection_id
+                return proof_request_web_request
+
+            elif cred_type == CRED_FORMAT_JSON_LD:
+                proof_request_web_request = {
+                    "comment": "test proof request for json-ld",
+                    "presentation_request": {
+                        "dif": {
+                            "options": {
+                                "challenge": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+                                "domain": "4jt78h47fh47",
+                            },
+                            "presentation_definition": {
+                                "id": "32f54163-7166-48f1-93d8-ff217bdb0654",
+                                "format": {"ldp_vp": {"proof_type": [SIG_TYPE_BLS]}},
+                                "input_descriptors": [
+                                    {
+                                        "id": "citizenship_input_1",
+                                        "name": "EU Driver's License",
+                                        "schema": [
+                                            {
+                                                "uri": "https://www.w3.org/2018/credentials#VerifiableCredential"
+                                            },
+                                            {
+                                                "uri": "https://w3id.org/citizenship#PermanentResident"
+                                            },
+                                        ],
+                                        "constraints": {
+                                            "limit_disclosure": "required",
+                                            "is_holder": [
+                                                {
+                                                    "directive": "required",
+                                                    "field_id": [
+                                                        "1f44d55f-f161-4938-a659-f8026467f126"
+                                                    ],
+                                                }
+                                            ],
+                                            "fields": [
+                                                {
+                                                    "id": "1f44d55f-f161-4938-a659-f8026467f126",
+                                                    "path": [
+                                                        "$.credentialSubject.familyName"
+                                                    ],
+                                                    "purpose": "The claim must be from one of the specified person",
+                                                    "filter": {"const": "SMITH"},
+                                                },
+                                                {
+                                                    "path": [
+                                                        "$.credentialSubject.givenName"
+                                                    ],
+                                                    "purpose": "The claim must be from one of the specified person",
+                                                },
+                                            ],
+                                        },
+                                    }
+                                ],
+                            },
+                        }
+                    },
+                }
+                if not connectionless:
+                    proof_request_web_request["connection_id"] = self.connection_id
+                return proof_request_web_request
+
+            else:
+                raise Exception(f"Error invalid credential type: {self.cred_type}")
+
+        else:
+            raise Exception(f"Error invalid AIP level: {self.aip}")
+
+    '''
     def generate_proof_request_web_request(
         self, aip, cred_type, revocation, exchange_tracing, connectionless=False
     ):
@@ -624,6 +924,7 @@ class HealthInstituteAgent(AriesAgent):
 
         else:
             raise Exception(f"Error invalid AIP level: {self.aip}")
+    '''
 
 
 async def main(args):
@@ -743,7 +1044,7 @@ async def main(args):
 
         upgraded_to_anoncreds = False
         async for option in prompt_loop(
-            options.replace("%CRED_TYPE%", healthInstitute_agent.cred_type)
+                options.replace("%CRED_TYPE%", healthInstitute_agent.cred_type)
         ):
             if option is not None:
                 option = option.strip()
@@ -751,8 +1052,8 @@ async def main(args):
             # Anoncreds has different endpoints for revocation
             is_anoncreds = False
             if (
-                healthInstitute_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
-                or upgraded_to_anoncreds
+                    healthInstitute_agent.agent.__dict__["wallet_type"] == "askar-anoncreds"
+                    or upgraded_to_anoncreds
             ):
                 is_anoncreds = True
 
@@ -993,15 +1294,15 @@ async def main(args):
                     )
                     pres_req_id = proof_request["presentation_exchange_id"]
                     url = (
-                        os.getenv("WEBHOOK_TARGET")
-                        or (
-                            "http://"
-                            + os.getenv("DOCKERHOST").replace(
-                                "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
-                            )
-                            + "/webhooks"
-                        )
-                    ) + f"/pres_req/{pres_req_id}/"
+                                  os.getenv("WEBHOOK_TARGET")
+                                  or (
+                                          "http://"
+                                          + os.getenv("DOCKERHOST").replace(
+                                      "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
+                                  )
+                                          + "/webhooks"
+                                  )
+                          ) + f"/pres_req/{pres_req_id}/"
                     log_msg(f"Proof request url: {url}")
                     qr = QRCode(border=1)
                     qr.add_data(url)
@@ -1052,13 +1353,13 @@ async def main(args):
                     )
                     pres_req_id = proof_request["pres_ex_id"]
                     url = (
-                        "http://"
-                        + os.getenv("DOCKERHOST").replace(
-                            "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
-                        )
-                        + "/webhooks/pres_req/"
-                        + pres_req_id
-                        + "/"
+                            "http://"
+                            + os.getenv("DOCKERHOST").replace(
+                        "{PORT}", str(healthInstitute_agent.agent.admin_port + 1)
+                    )
+                            + "/webhooks/pres_req/"
+                            + pres_req_id
+                            + "/"
                     )
                     log_msg(f"Proof request url: {url}")
                     qr = QRCode(border=1)
@@ -1094,8 +1395,8 @@ async def main(args):
                 rev_reg_id = (await prompt("Enter revocation registry ID: ")).strip()
                 cred_rev_id = (await prompt("Enter credential revocation ID: ")).strip()
                 publish = (
-                    await prompt("Publish now? [Y/N]: ", default="N")
-                ).strip() in "yY"
+                              await prompt("Publish now? [Y/N]: ", default="N")
+                          ).strip() in "yY"
 
                 try:
                     endpoint = (
