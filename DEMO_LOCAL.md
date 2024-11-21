@@ -20,6 +20,8 @@ Pacientes candidatos a uma campanha de vacinação. Tanto Alice quanto Bob solic
 ### Immunization Center  
 Verificador/Emissor de credencial: Immunization Center solicitará de Alice e Bob uma apresentação verificável onde ambos apresentarão a credencial gerada pelo Health Institute contendo prova de sua idade e condição. Immunization Center também é capaz de emitir uma credencial uma nova credencial contendo a aprovação para a campanha.  
 
+### É importante ressaltar que um bug nesse momento está impedindo que Alice encontre a credencial que deveria utilizar para a apresentação da verificação, sendo que todos os passos até a solicitação estão cobertos. Estamos trabalhando na correção deste contratempo. Enquanto isso, por favor verifique a demonstração funcionando em  [DEMO_DOCKER.md](https://github.com/Heffel/indy_dev_env/blob/master/DEMO_DOCKER.md).
+
 
 ## SETUP  
 
