@@ -1,1 +1,0 @@
-{"virtualbox":{"/lab":{"type":"virtualbox","guestpath":"/lab","hostpath":"/home/rick/Desktop/TESTANDO PROJETO","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/rick/Desktop/TESTANDO PROJETO/indy_dev_env","disabled":false,"__vagrantfile":true}}}
