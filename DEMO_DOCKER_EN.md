@@ -1,85 +1,113 @@
-# Demonstração Health Institute - Alice Patient - Imunization Center   
+# **Health Institute Demonstration - Alice Patient - Immunization Center**  
 
-### Este é um roteiro de demonstração de agentes Aries com objetivo de observar a emissão e validação de credenciais verificáveis na stack hyperledger assim como a interação dos agentes com a blockchain indy.  
-  
+### This is a demonstration script for Aries agents aimed at observing the issuance and validation of verifiable credentials within the Hyperledger stack, as well as the interaction of agents with the Indy blockchain.  
 
-### Os Agentes; Health Institute(healthInst), Alice Patient(alice) e Imunization Center(ImmuCent) são adaptações dos agentes Faber, Alice e ACME fornecidos pela aca-py.org. Para mais informações verificar https://aca-py.org/latest/aca-py.org/
+### The agents: Health Institute (healthInst), Alice Patient (alice), and Immunization Center (ImmuCent) are adaptations of the Faber, Alice, and ACME agents provided by aca-py.org. For more information, check https://aca-py.org/latest/aca-py.org/  
 
-### A ACA-Py oferece suporte ao Aries Interop Profile (AIP) 2.0, oferecendo protocolos importantes para emissão, verificação e retenção de VCs no formato Hyperledger AnonCreds cobrindo assim as operações ZKP que são utilizadas pelas implementações Aries/AnonCreds nos agentes. 
-  
+### ACA-Py supports Aries Interop Profile (AIP) 2.0, offering key protocols for issuing, verifying, and storing verifiable credentials (VCs) in the Hyperledger AnonCreds format, covering Zero-Knowledge Proof (ZKP) operations used by Aries/AnonCreds implementations in agents.  
 
-### Health Institute  
+---
 
-Emissor de credenciais: emitirá credenciais para Alice contendo informações que os classificarão ou não para uma campanha de vacinação, onde na opção "1g" Alice será maior de 18 anos e portadora de uma condição especial, simbolizada pelo status 1 e na opção "1b" Alce será menor de 18 anos e não portador da condição, simbolizado pelo número 0. A implementação do agente Health Institute também possui um método que permite a validação de credenciais emitidas por ele.  
-  
+## **Health Institute**  
 
-### Alice Patient
-Paciente candidato a uma campanha de vacinação. Alice solicita uma credencial verificavel ao Health Institute contendo prova de sua condição de saúde e idade. Essa será apresentada ao Immunization Center como requisito para uma campanha experimental de vacinação.  
+Credential issuer: It will issue credentials to Alice containing information that will determine her eligibility for a vaccination campaign.  
 
+- **Option "1g"**: Alice is over 18 and has a special condition (represented by status **1**).  
+- **Option "1b"**: Alice is under 18 and does not have the condition (represented by **0**).  
 
-### Immunization Center  
-Verificador/Emissor de credencial: Immunization Center solicitará de Alice uma apresentação verificável onde ela apresentará a credencial gerada pelo Health Institute contendo prova de sua idade e condição. Immunization Center também é capaz de emitir uma nova credencial contendo a aprovação para a campanha.  
+The Health Institute agent also has a method to validate credentials issued by it.  
 
+---
 
-## SETUP  
+## **Alice Patient**  
 
+A patient candidate for a vaccination campaign. Alice requests a verifiable credential from the Health Institute containing proof of her health condition and age. This credential will be presented to the Immunization Center as a requirement for an experimental vaccination campaign.  
 
-A demonstração proposta requer a realização dos passos contidos no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Caso ainda não tenha os executado, pare aqui, acesse [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) e retorne após cumprir as etapas lá elencadas.   
+---
 
-02 - Copiando os arquivos demo para a pasta lab: Como descrito no arquivo [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a maquina virtual possui um diretório "lab" que está mapeado para o nível acima do diretório do projeto. O diretório "lab" permite interação de elementos da máquina host, como IDEAs, com elementos que podem ser vistos da máquina virtual. Copiaremos os arquivos providos para o diretório "lab" e os executaremos de lá. Podemos fazer isto de duas formas: 
+## **Immunization Center**  
 
-01a - Copiar a pasta 'runners' através do navegador de arquivos da máquina host 
-- 01a.1 - Através do navegador de arquivos da máquina host, localize o diretório do projeto.  
-- 01a.2 - Acessando o diretório do projeto localize a pasta "docker_demo" 
-- 01a.3 - Copie a pasta "docker_demo" para o nível acima da pasta do projeto.  
+Verifier/Credential Issuer: The Immunization Center will request a verifiable presentation from Alice, where she will present the credential issued by the Health Institute containing proof of her age and condition. The Immunization Center can also issue a new credential confirming her approval for the campaign.  
 
-	Exemplo: se a pasta do projeto está salva em  
-	C:/media/user/projetos/indy_dev_env/ 
-	copie a pasta "docker_demo" para 
-	C:/media/user/projetos/
+---
+
+## **SETUP**  
+
+The proposed demonstration requires completing the steps in the [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) file.  
+
+If you have not completed them yet, stop here, visit [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md), and return after following the listed steps.  
+
+### **Copying the Demo Files to the Lab Folder**  
+
+As described in the [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) file, the virtual machine has a **lab** directory mapped to a level above the project directory. This **lab** directory enables interaction between the host machine (e.g., IDEs) and files visible within the virtual machine.  
+
+We will copy the provided files to the **lab** directory and execute them from there.  
+
+You can do this in two ways:  
+
+#### **Option 1a - Copy the "docker_demo" folder using the host machine's file manager:**  
+
+1. Locate the project directory using your file manager.  
+2. Inside the project directory, find the **docker_demo** folder.  
+3. Copy the **docker_demo** folder to the level above the project folder.  
+
+**Example:**  
+If the project folder is saved in:  
+`C:/media/user/projects/indy_dev_env/`  
+Copy the **docker_demo** folder to:  
+`C:/media/user/projects/`  
 
 ![image](https://github.com/user-attachments/assets/e089b029-e958-4dc3-97f1-8e7d27839374)
 
 
+#### **Option 1b - Copy the "docker_demo" folder using the virtual machine's command line:**  
 
-### OU 
-
-01b - Copiar a pasta 'docker_demo' através da linha de comando da máquina virtual: 
-- 01b.1 - Na máquina virtual certifique-se que está no diretório home/vagrant. Digite: 
+1. Ensure you are in the **/home/vagrant** directory by typing:  
 
 ```bash  
 cd ~ 
 ```  
 
-- 01b.2 - Informe o seguinte comando 
+2. Run the following command:  
+
 ```bash  
 cp -r ../../lab/indy_dev_env/docker_demo/ ../../lab/docker_demo 
 ```  
 
-### É importante que a pasta docker_demo seja copiada para a pasta lab. A tentativa de rodar os agentes em sua localização original (dentro da pasta do repositório git) pode encontrar problemas de inicialização dos mesmos.
+**Important:**  
+The **docker_demo** folder must be copied to the **lab** folder. Running the agents from their original location (inside the Git repository folder) may cause startup issues.  
 
-02 - Obtendo LEDGER_URL: os agentes fornecidos pela aca-py foram idealizados para serem executados em localhost, e, portanto, procurar a blockchain von-network em localhost:9000. No entanto, como estaremos os executando de uma máquina virtual, e como vimos em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) a blockchain não estará escutando em localhost:9000, logo devemos nos informar do ip correto para que possamos observar as transações na nossa von-network. 
+---
 
-02.1 - Na máquina virtual certifique-se que a von-network esteja up. Instruções para o mesmo estão em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md) 
+## **Obtaining LEDGER_URL**  
 
+The Aries agents provided by aca-py are designed to run on **localhost** and will attempt to connect to the **von-network** blockchain at `localhost:9000`.  
 
-02.2 - Com a von-network up, obtenha o seu endereço, novamente com as instruções em [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md). Para este exemplo, o ip onde se encontra a von-network é 192.168.178.172:9000 
+However, since we are running them on a virtual machine, the blockchain **will not be listening on localhost:9000**. Instead, we need to determine the correct IP address to observe transactions on the **von-network**.  
 
+1. **Ensure the von-network is running** in the virtual machine. Instructions for this are available in the [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md).  
+2. **Obtain the correct IP address** of the von-network using the instructions in [README.md](https://github.com/Heffel/indy_dev_env/blob/master/README.md).  
+3. **Example:** Let's assume the von-network is running at `192.168.178.172:9000`.  
 
+---
 
-## INICIANDO OS AGENTES
+## **STARTING THE AGENTS**  
 
-01 - Abra um terminal de linha de comando na pasta principal do projeto, a que contém o arquivo "Vagrant file" 
+### **1. Open a command-line terminal in the project's main folder (where the **Vagrantfile** is located).**  
+### **2. Access the virtual machine using:**  
 
-02 - Acesse a máquina virtual através do comando: 
 ```bash 
 vagrant ssh 
 ```   
-03 - Verifique se os containers nós da von-network e postgres estão rodando através do comando  
+
+### **3. Verify that the **von-network** nodes and **PostgreSQL** containers are running using:**  
+
 ```bash   
 sudo docker ps 
 ```   
-que deve listar os containers rodando: 
+
+This should list the running containers:  
+
 ```bash 
 CONTAINER ID   IMAGE              COMMAND                  CREATED        STATUS        PORTS                                                           NAMES 
 b52d061ec5db   von-network-base   "./scripts/start_nod…"   24 hours ago   Up 24 hours   0.0.0.0:9707-9708->9707-9708/tcp, :::9707-9708->9707-9708/tcp   von-node4-1 
@@ -90,33 +118,46 @@ b1591e3c60e2   von-network-base   "./scripts/start_nod…"   24 hours ago   Up 2
 2ff0aac77b96   postgres           "docker-entrypoint.s…"   24 hours ago   Up 24 hours   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                       some-postgres 
 ```   
 
-04 - Acesse a pasta "lab/runners" através do comando: 
+### **4. Navigate to the **lab/runners** directory:**  
+
 ```bash   
 cd ../../lab/docker_demo/demo  
 ```   
 
-05 - Uma vez na pasta demo execute o agente Alice através do comando sudo ./run_demo alice:
+### **5. Start the **Alice** agent by running:**
 
 ```bash   
 sudo ./run_demo alice 
 ```   
-Assim que o comando é iniciado o script run_demo irá montar o container docker que hospeda o agente Alice, esse passo pode demorar alguns minutos.
 
-06 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que como Alice é um agente do tipo "holder" nenhuma interação é feita com a blockchain, sendo que Alice ainda está aguardando comunicação com Health Institute e Immunization Center que registrarão seus esquemas na blockchain. 
+Once the command is executed, the **run_demo** script will build the Docker container hosting the Alice agent. This step may take a few minutes.  
 
-07 - De volta ao terminal, verifique que o agente Alice obteve o genesis file de nossa ledger e está rodando e aguardando conexão 
+### **6. Open the **von-network** interface in a web browser and go to **Ledger State > Domain**.**  
+
+Since Alice is a **holder** agent, she does not interact with the blockchain directly. She will wait for communication from the **Health Institute** and **Immunization Center**, which will register their credential schemas on the blockchain.  
+
+### **7. In the terminal, verify that Alice has obtained the **genesis file** from the ledger and is running:**  
+
 ```bash   
 #9 Input invitation details 
 Invite details:            
 ```   
 
-08 - Para subir o agente Health Institution repita os passos 01,02 e 04 Uma vez na pasta demo execute o agente Health Institution através do comando: 
+
+### **08 - Starting the Health Institute Agent**  
+
+Repeat steps **01, 02, and 04**. Once inside the **demo** folder, run the Health Institute agent using the command:  
+
 ```bash   
 sudo ./run_demo faber
 ```   
-repare que "faber" é o nome do arquivo faber.py que foi herdado da demo original do ACA-Py, ao verificar o código do mesmo veremos que se trata do agente "health institute"
 
-09 - Observe que no processo de inicialização, o agente Health Institution exibirá o esquema de credencial que registrará na blockchain. Ele deve se parecer com isso: 
+Notice that **"faber"** is the name of the **faber.py** file inherited from the original ACA-Py demo. When checking the code, you will see that it corresponds to the **Health Institute** agent.  
+
+### **09 - Credential Schema Registration**  
+
+During initialization, the **Health Institute** agent will display the credential schema it registers on the blockchain. It should look like this:  
+
 ```bash   
 #3/4 Create a new schema/cred def on the ledger
 Schema:
@@ -159,37 +200,55 @@ Schema ID: 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
 Cred def ID: 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
 ```   
 
-10 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que diferentemente de Alice Patient, Health Institute gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
+### **10 - Viewing the Schema in the Blockchain**  
 
-- Message wrapper 
-- Metadata 
-- Transaction 
-O campo Transaction conterá o atributo "Alias: healthInstitute.agent" 
+Open **von-network** in your web browser, scroll to the bottom right section **"Ledger State"**, and click on the **"Domain"** link.  
 
-Expanda o campo "raw data" para verificar a estrutura do esquema. 
+Unlike Alice Patient, the Health Institute agent generates **entries on the blockchain**, as it has the ability to issue verifiable credentials.  
 
-12 - De volta ao terminal, verifique que o agente Health Institute está rodando e gerou dados para estabelecer uma conexão, eles devem parecer como o do exemplo:
+Check the following fields:  
 
-![image](https://github.com/user-attachments/assets/b2f7edc3-1f9e-4c61-9238-13da3d2bcc2c)
+- **Message wrapper**  
+- **Metadata**  
+- **Transaction** (This field will contain the alias `"healthInstitute.agent"`).  
 
+### **11 - Expand the **"raw data"** field to examine the schema structure.**  
 
-* ### Não copie os dados aqui apresentados para conexões, utilize os gerados no terminal da própria máquina.
+---
+
+### **12 - Verifying the Agent’s Status**  
+
+Return to the terminal and verify that the **Health Institute** agent is running and has generated connection data. The output should look like the following example:  
+
+![image](https://github.com/user-attachments/assets/b2f7edc3-1f9e-4c61-9238-13da3d2bcc2c)  
+
+---
+
+### **⚠️ Important:**  
+
+Do **not** copy the connection data shown here. Instead, use the connection details generated in your terminal.  
 
 ```bash   
 Invitation Data: 
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "d7036e77-455d-4c37-b6a1-8852dfac8640", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MkegshLyXJRnyYTCirvPR81J725UBNpJUN9sNZGjpdDY8d"], "serviceEndpoint": "http://localhost:8020"}], "label": "healthInstitute.agent"}
- 
 ```   
 
-13 - Utilize apenas a parte depois de Data: 
+### **13 - Extract the Connection Data**  
+
+Use only the part after `"Data:"`.  
+
 ```bash   
 {"@type": "https://didcomm.org/out-of-band/1.1/invitation", "@id": "d7036e77-455d-4c37-b6a1-8852dfac8640", "handshake_protocols": ["https://didcomm.org/didexchange/1.0"], "services": [{"id": "#inline", "type": "did-communication", "recipientKeys": ["did:key:z6MkegshLyXJRnyYTCirvPR81J725UBNpJUN9sNZGjpdDY8d"], "serviceEndpoint": "http://localhost:8020"}], "label": "healthInstitute.agent"}
- 
-``` 
+```  
 
-Cole no terminal do agente Alice Patient, pressione ENTER para estabelecer uma sessão entre os 2 agentes, liberando os menus de operação em ambos. 
+Paste this into the terminal of the **Alice Patient** agent and press **ENTER** to establish a session between the two agents, enabling their operational menus.  
 
-14 -  O menu do agente Alice deve se parecer com: 
+---
+
+### **14 - Alice’s Agent Menu**  
+
+After connecting, Alice’s terminal should display:  
+
 ```bash   
 Alice      | Connected 
 Alice      | Check for endorser role ... 
@@ -202,7 +261,12 @@ Connect duration: 0.35s
 [3/4/X]                          
 ```   
 
-15 - O menu do agente Health Institute deve se parecer com: 
+---
+
+### **15 - Health Institute’s Agent Menu**  
+
+The **Health Institute** agent’s menu should look like this:  
+
 ```bash   
 HealthInstitute | Check for endorser role ...
     (1g) Issue Good Credential
@@ -217,7 +281,18 @@ HealthInstitute | Check for endorser role ...
 [1/2/3/4/T/X]                              
 ```   
 
-16 - Para testar a comunicação entre agentes, podemos enviar mensagens de Alice para Health Institute ou vice e versa. No exemplo mandaremos um "Hello from Alice" de Alice para Health Institute, escolhendo a opção 3 em Alice, informando a mensagem e verificando a chegada dela em Health Institute. 
+---
+
+### **16 - Testing Communication Between Agents**  
+
+To verify agent communication, we can send messages from **Alice to Health Institute** (or vice versa).  
+
+In this example, we will send a message from **Alice to Health Institute**.  
+
+1. Select **option 3** in Alice’s menu.  
+2. Enter the message: `"Hello from Alice"`.  
+3. Press **ENTER** to send the message.  
+
 ```bash  
 Alice      | Connected 
 Alice      | Check for endorser role ... 
@@ -228,10 +303,14 @@ Connect duration: 0.27s
     (X) Exit?                                                                                                                                                                                                                                  
 [3/4/X] 3                                                                                                                                                                                                                                      
 Enter message: Hello from Alice                                                                                                                                                                                                               
-Alice      | Received message: health institue.agent received your message 
+Alice      | Received message: healthInstitute.agent received your message 
 ```   
 
-em Health Institute observa-se: 
+---
+
+### ** Checking Message Reception in Health Institute**  
+
+In **Health Institute’s terminal**, you should see the received message:  
 
 ```bash  
 HealthInstitute      | Connected 
@@ -251,7 +330,14 @@ HealthInstitute      | Received message: Hello from Alice
 [1/2/3/4/T/X]                                      
 ```   
 
-17 - Em Health Institute emitiremos uma credencial para Alice, que conterá prova de que Alice é maior de idade e possui uma condição especial. No agente Health Institute escolha a opção 1g. Observe em Health Institute: 
+
+### **17 - Issuing a Credential to Alice**  
+
+In **Health Institute**, we will issue a credential to Alice containing proof that she is **over 18 years old** and has a **special condition**.  
+
+- In the **Health Institute** agent, select **option 1g**.  
+- Observe the process in **Health Institute**:  
+
 ```bash  
 #13 Issue good credential offer to X
 HealthInstitute | Credential: state = offer-sent, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
@@ -260,17 +346,20 @@ HealthInstitute | Credential: state = request-received, cred_ex_id = 1cb8b5b6-79
 #17 Issue credential to X
 HealthInstitute | Credential: state = credential-issued, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
 HealthInstitute | Credential: state = done, cred_ex_id = 1cb8b5b6-7904-4fa1-884f-666681216997
-
 ```   
 
-18 - Em Alice, observe que o agente foi informado do recebimento de uma credencial: 
+---
+
+### **18 - Checking Credential Reception in Alice**  
+
+In **Alice’s** terminal, observe that the agent has received a credential:  
+
 ```bash  
 Alice      | Credential: state = offer-received, cred_ex_id = add9926a-440e-4a9b-a974-777d2a6e73f7
 
 #15 After receiving credential offer, send credential request
 Alice      | Credential: state = request-sent, cred_ex_id = add9926a-440e-4a9b-a974-777d2a6e73f7
 Alice      | Credential: state = credential-received, cred_ex_id = add9926a-440e-4a9b-a974-777d2a6e73f7
-
 
 #18.1 Stored credential 2cb8fa7d-fcd9-4c79-a398-cfe080ac696e in wallet
 Alice      | Credential: state = done, cred_ex_id = a216a6ee-49de-4197-be9a-39f48b28d0c0
@@ -294,33 +383,47 @@ Alice      | credential_id 2cb8fa7d-fcd9-4c79-a398-cfe080ac696e
 Alice      | cred_def_id 6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema
 Alice      | schema_id 6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27
 ```   
-Onde sua data de nascimento em 2000/11/08 a faz maior de 18 anos e a condição "1" a qualifica para a campanha de vacinação do Immunization Center
 
+Alice’s **date of birth (2000/11/08)** makes her **over 18 years old**, and the **condition "1"** qualifies her for the **vaccination campaign** at the **Immunization Center**.  
 
-19 - Verifique no agente Alice o recibemento da nova credencial. Agora a opção 5 listará uma credencial que deve parecer como a seguinte:
+---
+
+### **19 - Verifying the Stored Credential in Alice**  
+
+Check the newly stored credential in **Alice’s** agent.  
+
+- Select **option 5** in **Alice’s menu** to list all credentials.  
+- The output should look like this:  
+
 ```bash
 All credentials: {'results': [{'referent': '2cb8fa7d-fcd9-4c79-a398-cfe080ac696e', 'schema_id': '6jMNVK6f3WCY31ZL9ZXn5F:2:health schema:83.72.27', 'cred_def_id': '6jMNVK6f3WCY31ZL9ZXn5F:3:CL:20:healthInstitute.agent.health_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'date': '2018-05-28', 'birthdate_dateint': '20001108', 'name': 'Alice Smith', 'timestamp': '1731078818', 'condition': '1'}}]}
+```  
 
-```
+---
 
-20 - Mesmo tendo a capacidade de verificar a própria credencial, faremos "oficialmente" uma solicitação de apresentação de credencial com o agente Immunization Center. Caso queira aproveitar efazer uma verificação mesmo assim, essa é a opção 2 em Health Institue. A opção 2 tem uma solicitação de apresentação que verifica as mesmas coisas solicitadas pelo Imunization center. Ao verificar a identidade, o terminal de Health Center deve apresentar algo como:
+### **20 - Official Credential Verification at Immunization Center**  
+
+Even though Alice can verify her own credential, we will **officially request** credential verification using the **Immunization Center** agent.  
+
+- If you want to perform an additional verification before proceeding, use **option 2** in **Health Institute**.  
+- This option requests proof of the same attributes required by the **Immunization Center**.  
+
+If verification is successful, **Health Institute's terminal** will display:  
 
 ```bash
 #20 Request proof of health from patient
 Generated proof request web request: {'connection_id': '07c9cb3a-e144-4476-b04c-ded0d6c074c2', 'presentation_request': {'indy': {'name': 'Proof of Health', 'version': '1.0', 'requested_attributes': {'0_name_uuid': {'name': 'name', 'restrictions': [{'schema_name': 'health schema'}]}, '0_date_uuid': {'name': 'date', 'restrictions': [{'schema_name': 'health schema'}]}}, 'requested_predicates': {'0_birthdate_dateint_GE_uuid': {'name': 'birthdate_dateint', 'p_type': '<=', 'p_value': 20061121, 'restrictions': [{'schema_name': 'health schema'}]}, '0_condition_GE_uuid': {'name': 'condition', 'p_type': '>=', 'p_value': 1, 'restrictions': [{'schema_name': 'health schema'}]}}}}, 'by_format': {'indy': {'name': 'Proof of Health', 'version': '1.0', 'requested_attributes': {'0_name_uuid': {'name': 'name', 'restrictions': [{'schema_name': 'health schema'}]}, '0_date_uuid': {'name': 'date', 'restrictions': [{'schema_name': 'health schema'}]}}, 'requested_predicates': {'0_birthdate_dateint_GE_uuid': {'name': 'birthdate_dateint', 'p_type': '<=', 'p_value': 20061121, 'restrictions': [{'schema_name': 'health schema'}]}, '0_condition_GE_uuid': {'name': 'condition', 'p_type': '>=', 'p_value': 1, 'restrictions': [{'schema_name': 'health schema'}]}}}}}
 HealthInstitute | Presentation: state = request-sent, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
-Presentation: state = request-sent, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
 HealthInstitute | Presentation: state = presentation-received, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
 
-#27 Process the proof provided by X
-
 #28 Check if proof is valid
-Presentation: state = presentation-received, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
 HealthInstitute | Presentation: state = done, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
-Presentation: state = done, pres_ex_id = be1f4ec0-b8a5-47c9-b109-74f1b25523fe
 HealthInstitute | Proof = true
-```
-o valor TRUE indica que os predicados esperados foram validados com sucesso. Em Alice observamos: 
+```  
+
+A **TRUE** value confirms that the expected conditions were successfully validated.  
+
+In **Alice’s terminal**, the verification process appears as follows:  
 
 ```bash
 Alice      | Presentation: state = request-received, pres_ex_id = 520e2068-5f8f-4af2-8a69-1fda389f3305
@@ -337,16 +440,17 @@ Alice      | Presentation: state = done, pres_ex_id = 520e2068-5f8f-4af2-8a69-1f
 Presentation: state = done, pres_ex_id = 520e2068-5f8f-4af2-8a69-1fda389f3305
 ```
 
-21 - Em Alice escolha a opção 4 para preparar o agente para futura conexão com o agente Immunization Office
+### **21 - In Alice, select option 4 to prepare the agent for a future connection with the Immunization Office agent.**  
 
-22 - Para subir o agente Immunization Center repita os passos 01,02 e 04 Uma vez na pasta runners execute o agente Immunization Center através do comando: 
+### **22 - To start the Immunization Center agent, repeat steps 01, 02, and 04. Once in the runners folder, execute the Immunization Center agent using the command:**  
+
 ```bash   
 sudo ./run_demo acme
 ```   
 
-repare que "acme" é o nome do arquivo acme.py que foi herdado da demo original do ACA-Py, ao verificar o código do mesmo veremos que se trata do agente "Immunization Center"
+Note that **"acme"** is the name of the **acme.py** file inherited from the original ACA-Py demo. When checking the code, you will see that it corresponds to the **Immunization Center** agent.  
 
-23 - Observe que no processo de inicialização, o agente Immunization Center exibirá esquemas de credenciais que registrará na blockchain. Ele deve se parecer com isso: 
+### **23 - During initialization, the Immunization Center agent will display credential schemas that it will register on the blockchain. It should look like this:**   
 ```bash   
 #3/4 Create a new schema/cred def on the ledger
 Schema:
@@ -426,20 +530,27 @@ Publish schema and cred def duration: 6.49s
 
 ```   
 
-24 - Acesse a von-netwrok no browser e localize no canto inferior direito a seção "Ledger State" e acesse o link "Domain". Note que assim como Health Institute, Immunization Center gerou entradas na blockchain, já que é um agente com a capacidade de emitir credenciais verificáveis. Verifique os campos: 
+### **24 - Access the von-network in your browser and locate the "Ledger State" section in the bottom right corner. Click on the "Domain" link.**  
 
-- Message wrapper 
-- Metadata 
-- Transaction 
-O campo Transaction conterá o atributo "Alias: immunization.agent" 
+Note that, just like the **Health Institute**, the **Immunization Center** has generated entries on the blockchain since it is an agent capable of issuing verifiable credentials.  
 
-Expanda o campo "raw data" para verificar a estrutura do esquema. 
+Check the following fields:  
 
-25 - Para estabelecer comunicação entre Alice e Immunization Center, em Alice escolha a opção 4 para informar um novo convite de conexão 
+- **Message wrapper**  
+- **Metadata**  
+- **Transaction** (The Transaction field will contain the attribute `"Alias: immunization.agent"`).  
 
-26 - Em Immunization Center, assim como com Health Institute, copie os dados de conexão e informe em Alice. Alice exibirá os dados da resposta do convite. 
+Expand the **"raw data"** field to inspect the schema structure.  
 
-27 -  O menu do agente Immunization Center deve se parecer com: 
+---
+
+### **25 - To establish communication between Alice and Immunization Center, select option 4 in Alice to input a new connection invitation.**  
+
+### **26 - In Immunization Center, just like with Health Institute, copy the connection details and provide them in Alice. Alice will display the invitation response data.**  
+
+---
+
+### **27 - The Immunization Center agent's menu should look like this:**  
 ```bash   
 Immunization | Connected
 immunization.agent handle_connections completed completed
@@ -451,8 +562,13 @@ immunization.agent handle_connections completed completed
 [1/2/3/X]                       
 ```   
 
-No cenário proposto, Immunization Center solicitará de Alice uma apresentação onde está deve prover uma credencial com prova de sua idade e condição especial, que foi gerada anteriormente por Healt Institute. Uma vez feita a solicitação, Alice irá responder automaticamente com a credencial apropriada que será validada. Em seguida, o operador de Immunization Center por sua vez emitirá uma segunda credencial verificável para Alice, através da opção 1, com o identificação positiva para a campanha. Podemos observar esta segunda credencial no código do agente Immunization Center: 
+In the proposed scenario, the Immunization Center will request a presentation from Alice, where she must provide a credential proving her age and special condition, which was previously issued by the Health Institute.
 
+Once the request is made, Alice will automatically respond with the appropriate credential, which will then be validated.  
+
+Next, the **Immunization Center** operator will issue a second **verifiable credential** to Alice using **option 1**, confirming her approval for the campaign.  
+
+We can observe this second credential in the **Immunization Center** agent's code:  
 ```python   
                 agent.cred_attrs[cred_def_id] = {
                     "patient_id": "IMMUN0009",
@@ -478,7 +594,7 @@ No cenário proposto, Immunization Center solicitará de Alice uma apresentaçã
                 )
 ```   
 
-28 - Em Immunization Center selecione a opção 2 para solicitar uma apresentação de Alice. O Terminal em immunization Center deve apresentar algo como:
+### **28 - In Immunization Center, select option 2 to request a presentation from Alice. The terminal in Immunization Center should display something like this:**
 
 ```bash   
 #20 Request proof of health
@@ -548,7 +664,7 @@ Immunization | schema_id: 2tYgwKYx4TweHGaNJQ3Bjm:2:health schema:12.10.84
 Immunization | cred_def_id 2tYgwKYx4TweHGaNJQ3Bjm:3:CL:18:healthInstitute.agent.health_schema
 ```
 
-29 - Alice responderá com a credencial gerada por Health Institute: 
+### **29 - Alice will respond with the credential issued by Health Institute:**  
 
 ```bash   
 Alice      | Presentation: state = request-received, pres_ex_id = 9e07c488-485a-4cc8-920a-b6d1ed412147
@@ -565,7 +681,7 @@ Alice      | Presentation: state = done, pres_ex_id = 9e07c488-485a-4cc8-920a-b6
 Presentation: state = done, pres_ex_id = 9e07c488-485a-4cc8-920a-b6d1ed412147
 ```
 
-30 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
+### **30 - After verification, the Immunization Center operator can generate a new credential for Alice by selecting option 1.**
 ```bash
 #13 Issue credential offer to X
 Immunization | Credential: state = offer-sent, cred_ex_id = 58c9da46-85a1-44f6-ad4d-a0ebb4f35148
@@ -574,7 +690,7 @@ Immunization | Credential: state = credential-issued, cred_ex_id = 58c9da46-85a1
 Immunization | Credential: state = done, cred_ex_id = 58c9da46-85a1-44f6-ad4d-a0ebb4f35148
 ``` 
 
-31 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma: 
+### **31 - After the verification and issuance of the new credential, check in Alice's agent that it has been received:** 
 ```bash
 Alice      | Credential: state = offer-received, cred_ex_id = d8b1a370-093c-48bb-8bfe-096849d8e1af
 
@@ -604,13 +720,16 @@ Alice      | cred_def_id MBcUP9jtziBNBZNvhQS53G:3:CL:24:immunization.agent.immun
 Alice      | schema_id MBcUP9jtziBNBZNvhQS53G:2:immunization id schema:31.66.25
 ``` 
 
-Agora a opção 5 listará duas credenciais que deve parecer como a seguinte:
+Now, option 5 will list two credentials, which should look like the following:  
 
 ```bash
 All credentials: {'results': [{'referent': '74429c6c-93ad-457a-b8fc-89ec5e07ece5', 'schema_id': 'VeBrp2W8QMaiCeqsVzxpwS:2:health schema:39.2.95', 'cred_def_id': 'VeBrp2W8QMaiCeqsVzxpwS:3:CL:36:healthInstitute.agent.health_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'timestamp': '1731083813', 'date': '2018-05-28', 'condition': '1', 'name': 'Alice Smith', 'birthdate_dateint': '20001108'}}, {'referent': '65134589-ed80-4343-ad53-ed9ac82774cd', 'schema_id': 'BAjHxoChwzMvdogdRyrvaf:2:immunization id schema:98.76.68', 'cred_def_id': 'BAjHxoChwzMvdogdRyrvaf:3:CL:42:immunization.agent.immunization_id_schema', 'rev_reg_id': None, 'cred_rev_id': None, 'attrs': {'position': 'APPROVED', 'date': '2024-11-08', 'patient_id': 'IMMUNI0009', 'name': 'Alice Smith'}}]}
 
 ```
-* Para verificar o cenário onde Alice não passa na verificação, pare o agente Alice através da opção "X" e o levante novamente. Ao estabelecer uma nova conexão com o "Health Institute" emita uma credencial onde Alice não deve se qualificar para a campanha de vacinação através da opção "1b". Em Alice veremos:
+* To test the scenario where Alice does not pass the verification:
+1. Stop the **Alice** agent using option **"X"** and restart it.  
+2. Establish a new connection with the **Health Institute** and issue a credential where **Alice does not qualify** for the vaccination campaign by selecting **option "1b"**.  
+3. In Alice’s terminal, you will see:  
 
 ```bash
 #18.1 Stored credential d8de13c4-411d-42bf-a7ea-1b3236c9e2b0 in wallet
@@ -630,9 +749,9 @@ Credential details:
     }
   }
 ```
-Onde sua data de nascimento em 2014/11/21 a faz menor de 18 anos e a condição "0" não a classificam para a campanha de vacinação do Immunization Center.
+Alice's **date of birth (2014/11/21)** makes her **under 18 years old**, and the **condition "0"** disqualifies her from the **Immunization Center’s vaccination campaign**.  
 
-Ao solicitar a verificação da credencial pelo agente Immunization Center, o agente Alice registrará uma stack de erros, onde ao final constata que a identidade recebida não atende o predicado esperado:
+When requesting credential verification through the **Immunization Center** agent, Alice’s agent will log an error stack, ultimately confirming that the received identity does **not meet the expected predicate**.  
 
 ```bash
 File "/home/aries/aries_cloudagent/protocols/present_proof/v2_0/routes.py", line 1229, in present_proof_send_presentation
@@ -642,16 +761,27 @@ Alice      |     raise http_error_class(reason=err.roll_up) from err
 Alice      | aiohttp.web_exceptions.HTTPBadRequest: Error creating presentation. Invalid state: Predicate is not satisfied.
 ```
 
-O Agente Immunization Center registrará que a prova foi abandonada
+The **Immunization Center** agent will record that the proof **was abandoned**.  
+
 
 ```bash
 Immunization | Presentation: state = request-sent, pres_ex_id = 245fb7ed-0879-40ee-b1c6-9b50a7464cc1
 Immunization | Presentation: state = abandoned, pres_ex_id = 245fb7ed-0879-40ee-b1c6-9b50a7464cc1
 ```
+### **All agents provide an API that can be accessed via the web browser on the host machine.**  
 
+In this demonstration, the default ports are:  
+- **8021** for **Health Institute**  
+- **8031** for **Alice**  
+- **8051** for **Bob**  
+- **8041** for **Immunization Center**  
 
-Todos os agentes disponibilizam uma API que pode ser acessada pelo webrowser da máquina host. As portas desta demonstração são sempre 8021 para Health Institute, 8031 para Alice, 8051 para Bob e 8041 para Immunization Center ou caso tenha passado para os agentes portas diferentes das indicadas na demonstração a API estará disponível na porta +1, exemplo, se Alice estiver ouvindo em 8050 a API estará em 8051. 
-Para este exemplo a URL  do localhost é http://192.168.178.172
+If you assigned different ports to the agents, the API will be available on **port +1**.  
+
+**Example:** If **Alice** is listening on **8050**, the API will be available on **8051**.  
+
+For this example, the **localhost URL** is:  
+**http://192.168.178.172**  
 
 http://192.168.178.172:8021/api/doc - HEALTH INSTITUTE
 
@@ -662,22 +792,26 @@ http://192.168.178.172:8041/api/doc - IMMUNIZATION CENTER
 ![image](https://github.com/user-attachments/assets/04834245-62ea-4e60-bdc9-dddccfd7fdfa)
 
 
+### **Let's look at an example of how we can query Alice's stored credentials:**  
 
-Vejamos um exemplo de como podemos consultaR as credenciais armazenadas de Alice:
+1. Access **http://192.168.178.172:8031/api/doc**  
+2. Locate the option: **"GET /credentials"**  
+3. Fill in the fields for:  
+   - The **number of credentials**  
+   - The **search index**  
+   - Leave **WQL** in the third field  
 
-1 - Acesse http://192.168.178.172:8031/api/doc
-
-2 - Localize a opção: "GET / credentials" e informe os campos para o número de credenciais o índice de procura e deixe WQL no terceiro campo
 ![image](https://github.com/user-attachments/assets/342d155b-7cf6-42ba-8e04-e7a952b3baa0)
 
-3 - Clique em "EXECUTE"
+3 - Clik on "EXECUTE"
 
-4 - Role a página e confira as credenciais no corpo da resposta:
+4 - Scroll down and check the credentials in the response body.
+
 
 ![image](https://github.com/user-attachments/assets/b07d92b4-234c-478b-a092-048e27bc83dc)
 
 
-* Mais informações de como utilizar a API podem ser encontradas nos links acima das opções da mesma:
+### **More information on how to use the API can be found in the links above its options.**
 ![image](https://github.com/user-attachments/assets/cdb89631-aeab-4722-b81e-3620d0a10223)
 
 
