@@ -547,8 +547,9 @@ Immunization | date: 2018-05-28
 Immunization | schema_id: 2tYgwKYx4TweHGaNJQ3Bjm:2:health schema:12.10.84
 Immunization | cred_def_id 2tYgwKYx4TweHGaNJQ3Bjm:3:CL:18:healthInstitute.agent.health_schema
 ```
+Como podemos observar, o passo #28 indica sucesso na autenticação.
 
-29 - Alice responderá com a credencial gerada por Health Institute: 
+28.1 - Resposta de Alice - credencial gerada por Health Institute: 
 
 ```bash   
 Alice      | Presentation: state = request-received, pres_ex_id = 9e07c488-485a-4cc8-920a-b6d1ed412147
