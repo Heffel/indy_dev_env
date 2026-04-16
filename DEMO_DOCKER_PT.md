@@ -547,7 +547,7 @@ Immunization | date: 2018-05-28
 Immunization | schema_id: 2tYgwKYx4TweHGaNJQ3Bjm:2:health schema:12.10.84
 Immunization | cred_def_id 2tYgwKYx4TweHGaNJQ3Bjm:3:CL:18:healthInstitute.agent.health_schema
 ```
-Como podemos observar, o passo #28 indica sucesso na autenticação.
+Como podemos observar, o passo #28 indica sucesso na verificação.
 
 28.1 - Resposta de Alice - credencial gerada por Health Institute: 
 
