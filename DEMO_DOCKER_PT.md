@@ -566,7 +566,7 @@ Alice      | Presentation: state = done, pres_ex_id = 9e07c488-485a-4cc8-920a-b6
 Presentation: state = done, pres_ex_id = 9e07c488-485a-4cc8-920a-b6d1ed412147
 ```
 
-30 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
+29 - Com a verificação realizada, o operador de Immunization Center pode gerar uma nova credencial para Alice selecionando a opção 1
 ```bash
 #13 Issue credential offer to X
 Immunization | Credential: state = offer-sent, cred_ex_id = 58c9da46-85a1-44f6-ad4d-a0ebb4f35148
@@ -575,7 +575,7 @@ Immunization | Credential: state = credential-issued, cred_ex_id = 58c9da46-85a1
 Immunization | Credential: state = done, cred_ex_id = 58c9da46-85a1-44f6-ad4d-a0ebb4f35148
 ``` 
 
-31 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma: 
+30 - Após a verificação e a emissão da nova credencial verifique no agente Alice o recibemento da mesma: 
 ```bash
 Alice      | Credential: state = offer-received, cred_ex_id = d8b1a370-093c-48bb-8bfe-096849d8e1af
 
